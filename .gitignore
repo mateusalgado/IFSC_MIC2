@@ -1,0 +1,16 @@
+# STM32CubeIDE/Eclipse generated files
+**/Debug/
+**/Release/
+**/.settings/
+**/.metadata/
+*.launch
+
+# macOS/Windows metadata
+.DS_Store
+._*
+Thumbs.db
+
+# Editor and temporary files
+*.swp
+*.tmp
+*.bak
