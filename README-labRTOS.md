@@ -14,7 +14,14 @@ continuam configurados pelo projeto Barry. A lógica dos exercícios está em
 4. Mantenha a USB de dados da placa conectada ao computador e abra sua porta
    serial virtual para ver as mensagens. Após cada gravação, reinicie a placa.
 
-No Linux, depois de clonar o repositório, importe a pasta
+No Linux, baixe o repositório com:
+
+```bash
+git clone https://github.com/mateusalgado/IFSC_MIC2.git
+cd IFSC_MIC2
+```
+
+Depois, importe a pasta
 `ex_Barry_USB_STM32F411CE` no STM32CubeIDE e grave o firmware pelo ST-LINK.
 Para encontrar e ler a porta USB CDC da placa:
 
