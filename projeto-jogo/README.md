@@ -2,7 +2,8 @@
 
 **Ponto de partida reiniciado em 27/10/2026.** Baseado em
 `Projeto_uC_II_2026_02.pdf` e `Game_Start2_STM32F411CE.zip`, enviados pelo professor.
-Não há tema, regras, motor adicional ou jogo completo definidos nesta etapa.
+Hardware escolhido: tela, joystick e sons, sem motor. Tema e regras ainda serão
+definidos; não há jogo completo nesta etapa.
 
 ## Conteúdo
 
@@ -10,6 +11,7 @@ Não há tema, regras, motor adicional ou jogo completo definidos nesta etapa.
 - `referencias/Projeto_uC_II_2026_02.pdf`: enunciado original.
 - [Escopo](docs/ESCOPO.md): exigências, decisões pendentes e sequência de trabalho.
 - [Base do professor](docs/BASE_PROFESSOR.md): recursos existentes e pontos de revisão.
+- [Hardware](docs/HARDWARE.md): peças informadas, sinais propostos e identificação pendente.
 - `scripts/build_base.py`: compilação da base original pela linha de comando.
 - [Origem](referencias/ORIGEM.md): identificação dos materiais e integridade das fontes.
 

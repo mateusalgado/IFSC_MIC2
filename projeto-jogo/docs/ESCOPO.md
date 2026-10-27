@@ -17,9 +17,17 @@ desenvolvimento em sala. Fonte: [enunciado original](../referencias/Projeto_uC_I
 ## Decisões ainda abertas
 
 Tema, objetivo do jogador, comandos, vitória/derrota, pontuação e progressão.
-Também confirmar a placa física, variante do ST7735, joystick, circuito de som
-e eventual periférico adicional. Motor não é requisito do enunciado nem está
-assumido nesta nova base. A ideia do elevador seguirá separadamente em MAQ.
+“Missão Circuito” foi sugerido, mas ainda não foi escolhido pelo usuário.
+Também confirmar a placa física, controlador/variante do display, pinagem dos
+módulos e circuito de som. Os componentes informados estão em [HARDWARE.md](HARDWARE.md).
+
+## Decisão de hardware em 27/10/2026
+
+O usuário definiu **somente tela, joystick e sons, sem motor** para MIC2.
+Informou um display “1.8 TFT SPI 128*60 V1.1” e joystick “MH preto”. O buzzer
+ainda não foi adquirido. A identificação da tela foi registrada literalmente;
+não se assume resolução, controlador ou alimentação apenas por esse nome.
+A ideia do elevador segue separadamente em MAQ.
 
 ## Sequência de desenvolvimento
 
