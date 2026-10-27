@@ -1,0 +1,23 @@
+name: Jogo - compilacao da base do professor
+on:
+  push:
+    paths:
+      - 'projeto-jogo/**'
+      - '.github/workflows/projeto-jogo.yml'
+  pull_request:
+    paths:
+      - 'projeto-jogo/**'
+      - '.github/workflows/projeto-jogo.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  base-stm32f411:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar compilador ARM
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends gcc-arm-none-eabi libnewlib-arm-none-eabi
+      - name: Compilar e ligar a base original
+        run: python3 projeto-jogo/scripts/build_base.py

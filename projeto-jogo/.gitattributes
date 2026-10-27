@@ -1,0 +1,4 @@
+Game_Start2_STM32F411CE/** -text
+*.pdf -text
+docs/*.md text eol=lf
+scripts/*.py text eol=lf
