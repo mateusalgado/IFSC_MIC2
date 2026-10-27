@@ -7,7 +7,17 @@ na placa; não são resultados medidos nem aprovação do professor.
 
 O aluno informou que gravou o firmware de diagnóstico e que tudo funcionou.
 Isso confirma o ensaio funcional relatado de tela/joystick/botão. Áudio, testes
-de duração, calibração numérica e implementação do jogo continuam pendentes.
+de duração e calibração numérica continuam pendentes. O marco atual do jogo
+é descrito na atualização de implementação abaixo.
+
+## Atualização de implementação
+
+M01 v0.1 implementa um mapa fácil com três tarefas, regras básicas, pausa,
+colisão, pontuação, resultado e reinício. Os testes no computador e builds
+passaram; ensaio físico desta versão, áudio, oito mapas e outras dificuldades
+continuam pendentes. A calibração usa zona morta sem a histerese adicional
+proposta abaixo. A regeneração do `.ioc` ainda não foi validada. Consulte
+[PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md) para o estado efetivo e instruções.
 
 ## 1. Experiência do jogador
 

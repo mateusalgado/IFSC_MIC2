@@ -1,4 +1,4 @@
-"""Build the hardware diagnostic derived from the teacher starter; Python 3 + GNU Arm Embedded required."""
+"""Build Labirinto M01 or its optional hardware diagnostic; Python 3 + GNU Arm Embedded required."""
 import argparse
 from pathlib import Path
 import shutil
@@ -7,14 +7,15 @@ import subprocess
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--cc', default='arm-none-eabi-gcc')
+parser.add_argument('--diagnostic', action='store_true')
 args = parser.parse_args()
 compiler = shutil.which(args.cc)
 if compiler is None:
     parser.error('Compiler not found. Pass --cc with its executable path.')
 base = root / 'Game_Start2_STM32F411CE'
 kernel = base / 'Middlewares/Third_Party/FreeRTOS/Source'
-output = root / 'build'
-output.mkdir(exist_ok=True)
+output = root / 'build' / ('diagnostico' if args.diagnostic else 'mapa01')
+output.mkdir(parents=True, exist_ok=True)
 folders = [base/'Core/Src', base/'Drivers/STM32F4xx_HAL_Driver/Src',
            kernel, kernel/'CMSIS_RTOS_V2']
 sources = [p for folder in folders for p in sorted(folder.glob('*.c'))]
@@ -27,13 +28,14 @@ include = [base/'Core/Inc', base/'Drivers/STM32F4xx_HAL_Driver/Inc',
 target = ['-mcpu=cortex-m4', '-mthumb', '-mfpu=fpv4-sp-d16', '-mfloat-abi=hard']
 options = target + ['-std=gnu11', '-O0', '-g3', '-Wall', '-DDEBUG', '-DUSE_HAL_DRIVER',
                     '-DSTM32F411xE', '-ffunction-sections', '-fdata-sections', '--specs=nano.specs']
+options += [f'-DAPP_DIAGNOSTIC={int(args.diagnostic)}']
 options += [f'-I{path}' for path in include]
 objects = []
 for number, source in enumerate(sources):
     obj = output / f'{number:03d}_{source.stem}.o'
     subprocess.run([compiler, *options, '-c', str(source), '-o', str(obj)], check=True)
     objects.append(str(obj))
-elf = output / 'base-professor.elf'
+elf = output / ('diagnostico-spi1.elf' if args.diagnostic else 'labirinto-mapa01.elf')
 subprocess.run([compiler, *target, *objects, f'-T{base / "STM32F411CEUX_FLASH.ld"}',
                 '--specs=nano.specs', '--specs=nosys.specs', '-Wl,--gc-sections',
                 f'-Wl,-Map={output / "base-professor.map"}', '-Wl,--start-group', '-lc', '-lm',
@@ -44,4 +46,4 @@ for suffix, fmt in [('hex', 'ihex'), ('bin', 'binary')]:
     target_file = elf.with_suffix('.' + suffix)
     subprocess.run([compiler.replace('gcc', 'objcopy'), '-O', fmt, str(elf), str(target_file)], check=True)
     print(f'Generated {target_file}')
-print('Hardware diagnostic only. Not executed on the board; not a complete game.')
+print('Build complete. Hardware execution must be checked on the board.')

@@ -4,8 +4,16 @@
 `Projeto_uC_II_2026_02.pdf` e `Game_Start2_STM32F411CE.zip`, enviados pelo professor.
 Hardware escolhido: tela, joystick e sons, sem motor. Ideia definida pelo aluno:
 conduzir um ponto por diferentes mapas de labirinto sem tocar nas paredes.
-O diagnóstico foi gravado e relatado como funcionando pelo aluno. O firmware
-atual continua sendo esse diagnóstico; a implementação do jogo está planejada.
+O diagnóstico foi gravado e relatado como funcionando pelo aluno. A versão atual
+é **M01 v0.1: primeiro mapa jogável**, com três vidas, tempo, pausa, colisão,
+pontuação e reinício. Esta nova versão aguarda teste na placa pelo aluno.
+
+## Testar agora
+
+Siga [PRIMEIRO_MAPA.md](docs/PRIMEIRO_MAPA.md) para atualizar o clone, compilar,
+gravar e testar. O build padrão executa o jogo; o diagnóstico continua disponível
+com `APP_DIAGNOSTIC=1` ou `--diagnostic` no script. A tela inicial identifica
+**LABIRINTO / M01 v0.1**. Ainda não há áudio nem a campanha de nove mapas.
 
 ## Plano para implementação
 
@@ -20,12 +28,12 @@ Regras e parâmetros abaixo constituem a proposta v1 para implementação e test
 
 ## Conteúdo
 
-- `Game_Start2_STM32F411CE/`: base do professor adaptada para diagnóstico de hardware.
+- `Game_Start2_STM32F411CE/`: base do professor adaptada para o primeiro mapa e diagnóstico opcional.
 - `referencias/Projeto_uC_II_2026_02.pdf`: enunciado original.
 - [Escopo](docs/ESCOPO.md): requisitos, decisões e situação das entregas.
 - [Base do professor](docs/BASE_PROFESSOR.md): recursos existentes e pontos de revisão.
 - [Hardware](docs/HARDWARE.md): peças informadas, ligações definidas e identificação pendente.
-- `scripts/build_base.py`: compilação do diagnóstico pela linha de comando.
+- `scripts/build_base.py`: compilação do jogo ou diagnóstico pela linha de comando.
 - [Teste de bancada](docs/TESTE_BANCADA.md): gravação, resultado esperado e registro de ensaios.
 - [Origem](referencias/ORIGEM.md): identificação dos materiais e integridade das fontes.
 
@@ -42,8 +50,8 @@ demonstração não representam um jogo já concluído.
 4. Confirmar placa, display, joystick e ligações antes de gravar/testar.
 
 As fontes originais estão preservadas no histórico indicado em `referencias/ORIGEM.md`.
-A versão atual inicia diretamente um diagnóstico de tela, eixos e botão sob FreeRTOS.
-Não espera o botão para começar nem executa as três tarefas gráficas do exemplo.
+A versão atual calibra o joystick e abre a tela inicial do labirinto. Entrada,
+lógica e desenho têm tarefas separadas; só uma tarefa acessa o ST7735.
 As saídas antigas `Debug/Release` do ZIP foram excluídas da importação.
 
 ## Compilação pela linha de comando
@@ -60,8 +68,20 @@ No Windows, se o compilador não estiver no PATH:
 python scripts/build_base.py --cc 'C:\caminho\tools\bin\arm-none-eabi-gcc.exe'
 ```
 
-O resultado vai para `build/base-professor.elf`, `.hex` e `.bin`; o nome do arquivo
-foi mantido por compatibilidade, mas o conteúdo é o diagnóstico atual. O script
-não grava o MCU. Os mesmos arquivos são disponibilizados pelo GitHub Actions
-no artefato `mic2-diagnostico-spi1`. Funcionamento físico e requisitos completos
-do jogo exigem ensaios futuros. Siga o [roteiro de teste](docs/TESTE_BANCADA.md).
+O resultado padrão vai para `build/mapa01/labirinto-mapa01.elf`, `.hex` e `.bin`.
+Use `--diagnostic` para gerar `build/diagnostico/diagnostico-spi1.*`. O script
+não grava o MCU. O GitHub Actions disponibiliza os artefatos
+`mic2-labirinto-mapa01` e `mic2-diagnostico-spi1`. Binários antigos
+`base-professor.*` não são a versão atual.
+
+## Testes no computador
+
+Com GCC/Clang e Python 3 (Linux/WSL):
+
+```sh
+python3 scripts/generate_map.py --check
+python3 scripts/test_host.py --sanitize
+```
+
+Os testes cobrem regras, percurso completo, entrada, desenho e o driver ST7735
+com periférico simulado. Não substituem o teste físico da nova versão.

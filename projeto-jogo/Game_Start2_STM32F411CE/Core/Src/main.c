@@ -29,6 +29,8 @@
 #include "defPrincipais.h"
 #include "PRNG_LFSR.h"
 #include "st7735.h"
+#include "game_config.h"
+#include "app_game.h"
 
 /* USER CODE END Includes */
 
@@ -62,10 +64,12 @@ const osThreadAttr_t defaultTask_attributes = {
 };
 /* USER CODE BEGIN PV */
 /* DMA fills alternating pairs; callbacks publish one aligned 32-bit snapshot. */
-__ALIGNED(4) static volatile uint16_t ADC_buffer[4];
+__ALIGNED(4) static volatile uint16_t ADC_buffer[64];
+#if APP_DIAGNOSTIC
 static volatile uint32_t adc_sample;
 static volatile uint32_t adc_updated_ms;
 static volatile uint8_t adc_ready;
+#endif
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,11 +88,19 @@ void StartDefaultTask(void *argument);
 /* USER CODE BEGIN 0 */
 static void PublishAdcPair(unsigned offset)
 {
-    uint32_t y = ADC_buffer[offset];
-    uint32_t x = ADC_buffer[offset + 1U];
+    /* Average 16 complete XY pairs from the DMA half that just finished. */
+    uint32_t x = 0, y = 0;
+    for (unsigned i = offset; i < offset + 32U; i += 2U) {
+        y += ADC_buffer[i]; x += ADC_buffer[i + 1U];
+    }
+    x /= 16U; y /= 16U;
+#if APP_DIAGNOSTIC
     adc_sample = (x << 16) | y;
     adc_updated_ms = HAL_GetTick();
     adc_ready = 1U;
+#else
+    App_AdcFromISR((uint16_t)x, (uint16_t)y, HAL_GetTick());
+#endif
 }
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
@@ -98,7 +110,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-    if (hadc->Instance == ADC1) PublishAdcPair(2U);
+    if (hadc->Instance == ADC1) PublishAdcPair(32U);
 }
 /* USER CODE END 0 */
 
@@ -110,7 +122,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  /* Hardware diagnostic build; game rules will be implemented separately. */
+  /* Default build: Labirinto M01. APP_DIAGNOSTIC selects the bench screen. */
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -135,7 +147,7 @@ int main(void)
   MX_SPI1_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  /* Display and ADC start in the diagnostic task after the scheduler starts. */
+  /* Application resources and ADC start after the scheduler starts. */
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -162,7 +174,7 @@ int main(void)
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* Only this task owns the display: transactions cannot interleave. */
+  /* Bootstrap creates application tasks and then deletes itself. */
   if (defaultTaskHandle == NULL) Error_Handler();
   /* USER CODE END RTOS_THREADS */
 
@@ -409,6 +421,7 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
   (void)argument;
+#if APP_DIAGNOSTIC
   char line[24];
   uint16_t previous_x = 2U, previous_y = 91U;
   uint32_t led_ms = HAL_GetTick();
@@ -423,7 +436,7 @@ void StartDefaultTask(void *argument)
   ST7735_FillRectangle(1, 89, 158, 38, ST7735_WHITE);
   ST7735_FillRectangle(2, 90, 156, 36, ST7735_BLACK);
 
-  if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC_buffer, 4) != HAL_OK)
+  if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC_buffer, 64) != HAL_OK)
       Error_Handler();
   TickType_t last_wake = xTaskGetTickCount();
   for (;;)
@@ -461,6 +474,12 @@ void StartDefaultTask(void *argument)
       }
       vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(50));
   }
+#else
+  App_Start();
+  if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC_buffer, 64) != HAL_OK)
+      Error_Handler();
+  vTaskDelete(NULL);
+#endif
   /* USER CODE END 5 */
 }
 

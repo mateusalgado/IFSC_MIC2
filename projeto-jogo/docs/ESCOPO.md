@@ -36,21 +36,22 @@ não representam jogo implementado ou aprovação do professor.
 - [x] Conceito do jogo escolhido e plano v1 de regras/RTOS/interface elaborado.
 - [ ] Aprovação da ideia pelo professor.
 - [ ] Valores medidos de calibração, identificação do MCU e ensaio prolongado.
-- [ ] Implementação da FSM, tarefas, comunicação e primeiro mapa jogável.
-- [ ] Vidas, tempo, pontuação, pausa, derrota e reinício completos.
+- [x] Primeiro mapa, FSM, três tarefas e comunicação implementados; ensaio físico pendente.
+- [x] Vidas, tempo, pontuação, pausa, derrota e reinício implementados/testados no computador para o mapa 01.
 - [ ] Três dificuldades jogáveis e nove mapas validados.
 - [ ] Buzzer escolhido, circuito dimensionado e áudio funcionando.
 - [ ] Arte final, testes, medições e relatório concluídos.
 
-O firmware disponível nesta revisão continua sendo o diagnóstico. O hardware
+O firmware padrão desta revisão é o mapa 01; o diagnóstico é uma opção de build.
+Ver [PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md). O hardware
 segue com tela, joystick e som, sem motor. A ideia do elevador permanece em MAQ.
 
 ## Próxima entrega concreta
 
-Preservar a versão de diagnóstico e implementar um mapa fácil: ponto controlado
-pelo joystick, colisão com a área inteira, início e saída. Depois incorporar o
-ciclo de vidas/tempo/pontos e expandir para três dificuldades. A sequência M0–M6
-e seus critérios de conclusão estão no plano completo.
+Gravar M01 v0.1 e registrar o comportamento real: centro, orientação, parada,
+colisões, pausa, vidas e saída. Ajustar a jogabilidade e depois expandir para
+três dificuldades. A reconciliação/regeneração do `.ioc`, medições de RTOS,
+áudio e demais mapas permanecem pendentes. A sequência M0–M6 está no plano.
 
 Não marcar testes físicos, medições ou aprovação docente como realizados sem
 evidência. O relato funcional do aluno e os resultados medidos têm registros separados.

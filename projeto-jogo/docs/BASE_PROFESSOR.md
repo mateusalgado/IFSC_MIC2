@@ -57,7 +57,7 @@ entradas correspondentes do ZIP. Não foram executados testes em placa, testes
 de jogabilidade nem importação pela interface gráfica do CubeIDE. A base inclui
 os pontos de revisão acima mesmo tendo compilado.
 
-## Adaptação atual para o teste de bancada
+## Diagnóstico anterior (commit 4382347)
 
 - SPI1 em PA5/PA7 e sinais CS/RST/DC em PB12/PB13/PB14 preservados.
 - Uma tarefa CMSIS-RTOS v2, com 2048 bytes de pilha, é dona de todo o display.
@@ -76,3 +76,14 @@ os pontos de revisão acima mesmo tendo compilado.
   usa o `main.c` existente com HSI/PLL em 96 MHz.
 
 Ver [TESTE_BANCADA.md](TESTE_BANCADA.md) para gravação e aceitação física.
+
+## Primeiro mapa (M01 v0.1)
+
+O código padrão atual usa três tarefas e um único dono do display, com filas de
+amostra, entrada, cliques, snapshots e confirmação de cena. ADC/DMA passou para
+64 meias-palavras com média de 16 pares por metade. O ST7735 agora limita a
+espera SPI, expõe erro, valida bordas e preenche retângulos com buffer fixo,
+sem malloc por desenho. A lógica e a interface possuem testes no computador.
+O clock real HSI/PLL de 96 MHz foi mantido; a reconciliação/regeneração do `.ioc`
+continua pendente. O plano completo de nove mapas ainda está em execução.
+Veja [PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md).

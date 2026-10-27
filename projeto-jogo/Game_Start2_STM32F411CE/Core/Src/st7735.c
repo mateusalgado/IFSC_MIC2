@@ -1,9 +1,24 @@
 /* vim: set ai et ts=4 sw=4: */
 #include "st7735.h"
-#include "malloc.h"
 #include "string.h"
 
 #define DELAY 0x80
+
+/* Sticky error consumed by the sole display-owner task. */
+static bool transport_error;
+bool ST7735_HasError(void) { return transport_error; }
+static void ST7735_Transmit(const uint8_t *data, size_t length)
+{
+    while (length && !transport_error) {
+        uint16_t chunk = length > 60000U ? 60000U : (uint16_t)length;
+        if (HAL_SPI_Transmit(&ST7735_SPI_PORT, (uint8_t *)data, chunk, 100U) != HAL_OK) {
+            transport_error = true;
+            break;
+        }
+        data += chunk; length -= chunk;
+    }
+}
+
 
 // based on Adafruit ST7735 library for Arduino
 static const uint8_t
@@ -100,12 +115,12 @@ static void ST7735_Reset() {
 
 static void ST7735_WriteCommand(uint8_t cmd) {
     HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&ST7735_SPI_PORT, &cmd, sizeof(cmd), HAL_MAX_DELAY);
+    ST7735_Transmit(&cmd, sizeof(cmd));
 }
 
 static void ST7735_WriteData(uint8_t* buff, size_t buff_size) {
     HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_SET);
-    HAL_SPI_Transmit(&ST7735_SPI_PORT, buff, buff_size, HAL_MAX_DELAY);
+    ST7735_Transmit(buff, buff_size);
 }
 
 static void ST7735_ExecuteCommandList(const uint8_t *addr) {
@@ -151,6 +166,7 @@ static void ST7735_SetAddressWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t 
 }
 
 void ST7735_Init() {
+    transport_error = false;
     ST7735_Select();
     ST7735_Reset();
     ST7735_ExecuteCommandList(init_cmds1);
@@ -165,7 +181,7 @@ void ST7735_DrawPixel(uint16_t x, uint16_t y, uint16_t color) {
 
     ST7735_Select();
 
-    ST7735_SetAddressWindow(x, y, x+1, y+1);
+    ST7735_SetAddressWindow(x, y, x, y);
     uint8_t data[] = { color >> 8, color & 0xFF };
     ST7735_WriteData(data, sizeof(data));
 
@@ -173,6 +189,8 @@ void ST7735_DrawPixel(uint16_t x, uint16_t y, uint16_t color) {
 }
 
 void ST7735_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint16_t color, uint16_t bgcolor) {
+    if ((unsigned char)ch < 32 || (unsigned char)ch > 126) ch = '?';
+    if (x + font.width > ST7735_WIDTH || y + font.height > ST7735_HEIGHT) return;
     uint32_t i, b, j;
 
     ST7735_Select();
@@ -210,46 +228,21 @@ void ST7735_WriteString(uint16_t x, uint16_t y, const char* str, FontDef font, u
 }
 
 void ST7735_FillRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color) {
-    // clipping
-    if((x >= ST7735_WIDTH) || (y >= ST7735_HEIGHT)) return;
-    if((x + w - 1) >= ST7735_WIDTH) w = ST7735_WIDTH - x;
-    if((y + h - 1) >= ST7735_HEIGHT) h = ST7735_HEIGHT - y;
-
+    /* Fixed row storage; no allocation or one HAL call per pixel. */
+    static uint8_t row[ST7735_WIDTH * 2];
+    if (w == 0 || h == 0 || x >= ST7735_WIDTH || y >= ST7735_HEIGHT) return;
+    if (w > ST7735_WIDTH - x) w = ST7735_WIDTH - x;
+    if (h > ST7735_HEIGHT - y) h = ST7735_HEIGHT - y;
+    for (unsigned i = 0; i < w; ++i) { row[2*i] = color >> 8; row[2*i+1] = color & 255; }
     ST7735_Select();
     ST7735_SetAddressWindow(x, y, x+w-1, y+h-1);
-
-    uint8_t data[] = { color >> 8, color & 0xFF };
     HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_SET);
-    for(y = h; y > 0; y--) {
-        for(x = w; x > 0; x--) {
-            HAL_SPI_Transmit(&ST7735_SPI_PORT, data, sizeof(data), HAL_MAX_DELAY);
-        }
-    }
-
+    for (unsigned i = 0; i < h && !transport_error; ++i) ST7735_Transmit(row, w*2U);
     ST7735_Unselect();
 }
 
 void ST7735_FillRectangleFast(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color) {
-    // clipping
-    if((x >= ST7735_WIDTH) || (y >= ST7735_HEIGHT)) return;
-    if((x + w - 1) >= ST7735_WIDTH) w = ST7735_WIDTH - x;
-    if((y + h - 1) >= ST7735_HEIGHT) h = ST7735_HEIGHT - y;
-
-    ST7735_Select();
-    ST7735_SetAddressWindow(x, y, x+w-1, y+h-1);
-
-    // Prepare whole line in a single buffer
-    uint8_t pixel[] = { color >> 8, color & 0xFF };
-    uint8_t *line = malloc(w * sizeof(pixel));
-    for(x = 0; x < w; ++x)
-    	memcpy(line + x * sizeof(pixel), pixel, sizeof(pixel));
-
-    HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_SET);
-    for(y = h; y > 0; y--)
-        HAL_SPI_Transmit(&ST7735_SPI_PORT, line, w * sizeof(pixel), HAL_MAX_DELAY);
-
-    free(line);
-    ST7735_Unselect();
+    ST7735_FillRectangle(x, y, w, h, color);
 }
 
 void ST7735_FillScreen(uint16_t color) {
@@ -261,6 +254,7 @@ void ST7735_FillScreenFast(uint16_t color) {
 }
 
 void ST7735_DrawImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t* data) {
+    if (w == 0 || h == 0 || data == NULL) return;
     if((x >= ST7735_WIDTH) || (y >= ST7735_HEIGHT)) return;
     if((x + w - 1) >= ST7735_WIDTH) return;
     if((y + h - 1) >= ST7735_HEIGHT) return;

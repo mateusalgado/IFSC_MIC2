@@ -91,6 +91,7 @@ dos fios dos módulos não aparecem.
 Faltam seleção e circuito do buzzer, identificação legível do MCU e medições
 de calibração/estabilidade. O teste funcional do diagnóstico foi relatado como
 bem-sucedido pelo aluno em 27/10/2026.
-PA8/A8 permanece reservado, sem ligação de buzzer nesta etapa. O firmware atual
-é o diagnóstico descrito em [TESTE_BANCADA.md](TESTE_BANCADA.md); a pinagem SPI1,
-ADC e botão do professor foi mantida.
+PA8/A8 permanece reservado, sem ligação de buzzer nesta etapa. O firmware padrão
+é o [primeiro mapa jogável](PRIMEIRO_MAPA.md); o diagnóstico de
+[TESTE_BANCADA.md](TESTE_BANCADA.md) continua opcional. A pinagem SPI1, ADC e botão
+do professor foi mantida.

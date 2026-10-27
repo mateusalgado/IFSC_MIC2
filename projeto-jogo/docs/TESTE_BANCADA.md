@@ -1,6 +1,10 @@
-# Primeiro teste de bancada
+# Diagnóstico opcional de bancada
 
-Este firmware é um diagnóstico de hardware baseado no material do professor.
+O build padrão agora é o [primeiro mapa jogável](PRIMEIRO_MAPA.md). Para esta
+tela de diagnóstico, usar `--diagnostic` no script ou `APP_DIAGNOSTIC=1` em
+`game_config.h` no CubeIDE, seguido de Clean/Build.
+
+Este firmware opcional é um diagnóstico baseado no material do professor.
 Não contém ainda as regras do jogo ou áudio. A pinagem definitiva deste ensaio
 é a original com **SPI1 por hardware: SDA A7 e SCK A5**.
 
@@ -31,8 +35,7 @@ nesta etapa: há uma divergência de clock herdada do exemplo, descrita em
 [BASE_PROFESSOR.md](BASE_PROFESSOR.md).
 
 Também é possível usar `scripts/build_base.py`, conforme o README. O script
-gera `build/base-professor.elf`, `.hex` e `.bin`. Apesar do nome histórico,
-esses arquivos contêm o diagnóstico atualizado. Pelo STM32CubeProgrammer,
+com `--diagnostic` gera `build/diagnostico/diagnostico-spi1.elf`, `.hex` e `.bin`. Pelo STM32CubeProgrammer,
 conectar ao ST-Link, abrir o `.hex`, programar com verificação e reiniciar.
 O `.hex` já contém os endereços; se optar pelo `.bin`, usar **0x08000000**.
 Não é necessário alterar BOOT0 para gravar por SWD/ST-Link.
@@ -60,7 +63,7 @@ para a montagem e manter GND comum ao programador.
   apresentação com período nominal de 50 ms; os tempos reais ainda serão medidos.
 
 Há uma única tarefa acessando o display. As interrupções ADC/DMA publicam os
-dados; não fazem desenho. O ADC usa duas metades de buffer alternadas, e a tarefa
+dados; não fazem desenho. O ADC usa duas metades de buffer alternadas (média de 16 pares por metade), e a tarefa
 lê X/Y juntos em uma palavra de 32 bits. O teste usa HSI/PLL em 96 MHz e SPI1
 com prescaler 8 (12 MHz nominais).
 
@@ -89,7 +92,7 @@ que um módulo funciona apenas porque a compilação passou.
 
 ## Verificação de software realizada
 
-Em 27/10/2026, o diagnóstico compilou e ligou 42 objetos com GNU Tools for STM32
+Na versão original `4382347`, em 27/10/2026, o diagnóstico compilou e ligou 42 objetos com GNU Tools for STM32
 14.3.rel1 (GCC 14.3.1), sem avisos de `-Wall`. Resultado: text 31864 bytes,
 data 104 bytes e bss 21176 bytes. Foram gerados ELF, HEX e BIN.
 Essa execução confirmou somente a compilação. Posteriormente, o aluno relatou

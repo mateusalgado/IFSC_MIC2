@@ -23,3 +23,12 @@ A versão atual substitui a demonstração de soldados por um diagnóstico em um
 única tarefa FreeRTOS, com leitura ADC/DMA e botão. A pinagem SPI1 foi mantida;
 o driver usa os nomes de CS/RST/DC definidos em `main.h`. O `.ioc` acompanha o
 aumento da pilha da tarefa para 2048 bytes. Não foi feita regeneração pelo CubeMX.
+
+## Implementação M01 v0.1
+
+A partir da base e do diagnóstico, foram adicionados módulos próprios de mapa,
+colisão, regras, entrada, renderização e integração RTOS, além de testes e
+instruções. As fontes de terceiros permanecem atribuídas aos autores; o driver
+ST7735 foi adaptado com limites, timeout e buffer fixo. A pinagem testada foi
+mantida. O diagnóstico original é recuperável no commit `4382347` e há opção
+de diagnóstico na versão atual. Não se atribui autoria do kernel/HAL ao aluno.
