@@ -18,15 +18,15 @@ desenvolvimento em sala. Fonte: [enunciado original](../referencias/Projeto_uC_I
 
 Tema, objetivo do jogador, comandos, vitória/derrota, pontuação e progressão.
 “Missão Circuito” foi sugerido, mas ainda não foi escolhido pelo usuário.
-Também confirmar a placa física, controlador/variante do display, pinagem dos
-módulos e circuito de som. Os componentes informados estão em [HARDWARE.md](HARDWARE.md).
+Também confirmar a placa física, controlador/variante do display e circuito de som. A pinagem para o ensaio
+está definida; falta validá-la em bancada. Os componentes informados estão em [HARDWARE.md](HARDWARE.md).
 
 ## Decisão de hardware em 27/10/2026
 
 O usuário definiu **somente tela, joystick e sons, sem motor** para MIC2.
-Informou um display “1.8 TFT SPI 128*60 V1.1” e joystick “MH preto”. O buzzer
-ainda não foi adquirido. A identificação da tela foi registrada literalmente;
-não se assume resolução, controlador ou alimentação apenas por esse nome.
+A foto confirmou a inscrição “1.8 TFT SPI 128*160 V1.1” e os terminais do
+joystick “MH preto”. O buzzer ainda não foi adquirido. O controlador ST7735
+é a premissa do software, ainda a validar fisicamente.
 A ideia do elevador segue separadamente em MAQ.
 
 ## Sequência de desenvolvimento
@@ -42,5 +42,31 @@ A ideia do elevador segue separadamente em MAQ.
 8. Elaborar relatório final com decisões e evidências reais de implementação.
 
 Nesta etapa não há testes de jogabilidade ou relatório final, porque as regras
-ainda não foram escolhidas. O primeiro marco é a base do professor organizada
-e com compilação reproduzível.
+ainda não foram escolhidas. O marco atual é o firmware de diagnóstico pronto para gravação; a validação
+na placa continua pendente.
+
+## Trabalho a executar e critérios de conclusão
+
+- [x] Organizar materiais do professor e preservar a origem.
+- [x] Definir a ligação SPI1: SDA A7, SCK A5, CS B12, RESET B13, DC B14;
+  joystick VRY A0, VRX A1 e SW C15.
+- [x] Preparar diagnóstico com uma tarefa responsável pela tela e gerar firmware.
+- [ ] Executar o roteiro de bancada: cores, área útil, eixos, botão e estabilidade;
+  registrar centro, extremos e orientação do joystick.
+- [ ] Escolher e submeter ao professor a ideia do jogo. Proposta para discussão:
+  **Missão Circuito** — mover um robô, coletar componentes e evitar faíscas.
+  Ainda não é uma decisão aprovada.
+- [ ] Fechar regras: objetivo, pontuação, vidas, vitória/derrota, reinício pelo
+  botão e três dificuldades com diferenças mensuráveis (velocidade, quantidade
+  de obstáculos e/ou tempo disponível).
+- [ ] Selecionar buzzer e circuito; confirmar se PA8/TIM1_CH1 atende ao componente.
+- [ ] Projetar tarefas de entrada, lógica, renderização e áudio, com filas de
+  eventos/estado, prioridades justificadas e propriedade exclusiva do display.
+- [ ] Implementar estados INICIO, JOGANDO e GAME_OVER, debounce, calibração e
+  primeira partida completa; depois implementar a progressão dos três níveis.
+- [ ] Testar regras fora da placa e medir tempos, memória, pilhas e resposta na
+  montagem real; tratar falhas de ADC/display e reconciliar o `.ioc`.
+- [ ] Concluir relatório com arquitetura, esquema, decisões, resultados medidos,
+  fotos e limitações; anexar código e instruções de reprodução no GitHub.
+
+Não registrar como realizado um teste físico ou aprovação do professor sem evidência.

@@ -14,3 +14,12 @@ Não se atribui autoria das bibliotecas ou exemplos do professor ao aluno.
 
 A documentação e o script de compilação nesta pasta são novos. O conteúdo
 do elevador anterior não integra a base deste jogo.
+
+## Adaptação para bancada
+
+A importação sem alterações está no commit
+[`02aed85`](https://github.com/mateusalgado/IFSC_MIC2/tree/02aed85f6b7a55d8cf7fbac0616d6681c7d9a5e9/projeto-jogo/Game_Start2_STM32F411CE).
+A versão atual substitui a demonstração de soldados por um diagnóstico em uma
+única tarefa FreeRTOS, com leitura ADC/DMA e botão. A pinagem SPI1 foi mantida;
+o driver usa os nomes de CS/RST/DC definidos em `main.h`. O `.ioc` acompanha o
+aumento da pilha da tarefa para 2048 bytes. Não foi feita regeneração pelo CubeMX.

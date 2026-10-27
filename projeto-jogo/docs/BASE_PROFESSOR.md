@@ -1,9 +1,9 @@
 # Leitura técnica de Game_Start2_STM32F411CE
 
-Inspeção dos arquivos fornecidos em 27/10/2026. As observações abaixo não
-representam alterações aplicadas ao código original.
+Inspeção dos arquivos fornecidos em 27/10/2026. As primeiras seções descrevem
+o ZIP original; as alterações atuais estão na seção final de adaptação.
 
-## O que existe
+## O que existia no ZIP original
 
 - STM32F411CEU6, configuração de CPU para 96 MHz e HAL com timebase TIM4.
 - FreeRTOS com CMSIS-RTOS v2 e chamadas nativas FreeRTOS no exemplo.
@@ -56,3 +56,23 @@ As 154 fontes/configurações extraídas foram comparadas byte a byte com as
 entradas correspondentes do ZIP. Não foram executados testes em placa, testes
 de jogabilidade nem importação pela interface gráfica do CubeIDE. A base inclui
 os pontos de revisão acima mesmo tendo compilado.
+
+## Adaptação atual para o teste de bancada
+
+- SPI1 em PA5/PA7 e sinais CS/RST/DC em PB12/PB13/PB14 preservados.
+- Uma tarefa CMSIS-RTOS v2, com 2048 bytes de pilha, é dona de todo o display.
+  Não há transações concorrentes entre as três tarefas gráficas do exemplo.
+- A tela inicia sem aguardar o botão; mostra RGB, X/Y, SW e um cursor.
+- ADC/DMA circular com quatro meias-palavras: cada callback lê a metade recém
+  concluída, enquanto a outra recebe a próxima conversão. Publica X/Y em uma
+  palavra de 32 bits; a tarefa faz uma única leitura para obter o par.
+- Callbacks apenas publicam amostra e instante; não desenham nem esperam.
+- Atualização nominal de 50 ms com `vTaskDelayUntil`, LED a cada 500 ms,
+  verificação da criação da tarefa e do início do ADC.
+- O teste exibe valores brutos e o estado bruto do botão. Calibração, debounce,
+  limites de latência e medição da margem de pilha ficam para a aplicação final.
+- O SPI bloqueante e a divergência de clock no `.ioc` continuam como pontos de
+  revisão. Não regenerar o projeto antes de reconciliar o clock. A compilação
+  usa o `main.c` existente com HSI/PLL em 96 MHz.
+
+Ver [TESTE_BANCADA.md](TESTE_BANCADA.md) para gravação e aceitação física.

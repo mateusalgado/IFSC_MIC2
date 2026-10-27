@@ -15,13 +15,16 @@ legíveis; o ST7735 continua sendo a premissa do software a validar em bancada.
 A placa STM32 tem marcações abreviadas A0/A1/B12/C15 e alimentação 3V3/G.
 O modelo exato gravado no MCU não é legível na foto.
 
-## Sinais propostos a partir da base do professor
+## Ligação definida para o teste — SPI1 por hardware
 
 Usar os nomes impressos nos conectores, não a posição aparente dos fios na foto:
 A5 significa PA5, B12 significa PB12 e C15 significa PC15. G significa GND.
 Não confundir A0 do display (dados/comando) com A0 da placa STM32.
 
-Display, caso seja compatível com o ST7735/SPI da base:
+Decisão final: **SDA em A7 e SCK em A5**, mantendo a ligação original.
+As alternativas com A8/A9 ou SPI2 não foram adotadas.
+
+Display (compatibilidade ST7735 ainda será validada fisicamente):
 
 - Clock SCK, por vezes identificado SCL: **PA5 / SPI1_SCK**.
 - Entrada de dados MOSI, por vezes identificada SDA: **PA7 / SPI1_MOSI**.
@@ -44,15 +47,15 @@ diretamente ao GPIO sem identificar seu circuito.
 
 Joystick, caso seja o módulo passivo de dois potenciômetros e botão:
 
-- VRY, eixo Y, correspondente a `valor_ADC[0]`: **PA0 / ADC1_IN0**.
-- VRX, eixo X, correspondente a `valor_ADC[1]`: **PA1 / ADC1_IN1**.
+- VRY, eixo Y, primeiro canal da sequência ADC: **PA0 / ADC1_IN0**.
+- VRX, eixo X, segundo canal da sequência ADC: **PA1 / ADC1_IN1**.
 - Botão SW: **PC15**, com pull-up e fechamento para GND, como no exemplo.
 - GND: **G/GND** do STM32.
 - Terminal marcado **+5V** no joystick: conectar em **3V3**, não em 5 V.
   O módulo de potenciômetros será alimentado em 3,3 V para que suas saídas
   analógicas acompanhem a faixa de alimentação do ADC.
 
-O código do professor usa ADC[1] como X e ADC[0] como Y. Conferir as inscrições
+A ordem de conversão do professor foi mantida: primeiro Y, depois X. Conferir as inscrições
 VRX/VRY e eventual inversão de sentido ao testar o joystick físico. PC15 também tem função de
 oscilador de baixa frequência; verificar se está disponível na placa escolhida.
 As entradas ADC devem respeitar a faixa analógica do MCU; não presumir que a
@@ -85,5 +88,6 @@ Não é possível certificar as conexões atuais pela foto, pois as outras ponta
 dos fios dos módulos não aparecem.
 
 Faltam seleção e circuito do buzzer, identificação legível do MCU e testes reais.
-PA8/A8 permanece reservado, sem ligação de buzzer nesta etapa. As fontes do
-professor permanecem inalteradas até a escolha da implementação.
+PA8/A8 permanece reservado, sem ligação de buzzer nesta etapa. O firmware atual
+é o diagnóstico descrito em [TESTE_BANCADA.md](TESTE_BANCADA.md); a pinagem SPI1,
+ADC e botão do professor foi mantida.

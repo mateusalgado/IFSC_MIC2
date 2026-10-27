@@ -57,15 +57,15 @@ SPI_HandleTypeDef hspi1;
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
-  .stack_size = 128 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
-
-
-uint16_t ADC_buffer[2];
-uint16_t valor_ADC[2];
-
+/* DMA fills alternating pairs; callbacks publish one aligned 32-bit snapshot. */
+__ALIGNED(4) static volatile uint16_t ADC_buffer[4];
+static volatile uint32_t adc_sample;
+static volatile uint32_t adc_updated_ms;
+static volatile uint8_t adc_ready;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -82,81 +82,24 @@ void StartDefaultTask(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static void PublishAdcPair(unsigned offset)
+{
+    uint32_t y = ADC_buffer[offset];
+    uint32_t x = ADC_buffer[offset + 1U];
+    adc_sample = (x << 16) | y;
+    adc_updated_ms = HAL_GetTick();
+    adc_ready = 1U;
+}
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    if (hadc->Instance == ADC1) PublishAdcPair(0U);
+}
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-
-	    valor_ADC[0]=ADC_buffer[0];
-		valor_ADC[1]=ADC_buffer[1];
+    if (hadc->Instance == ADC1) PublishAdcPair(2U);
 }
-
-//---------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------
-void vTask_Move_Soldado(void *pvParameters)
-{
-	// soldado comeca em (9,70)
-
-	uint32_t x=9,y=70;
-	uint32_t dif_eixoX,dif_eixoY;
-
-	while(1)
-	{
-
-		ST7735_FillRectangle(x, y, 8, 8, ST7735_BLACK); // apaga soldado anterior
-
-		dif_eixoX = valor_ADC[1];// media_eixoX;
-		dif_eixoY = valor_ADC[0];//media_eixoY;
-
-		if(dif_eixoX < 1800)   // aprox. 200 de segurança
-		{
-			if(x>0) x--;
-		}
-		else if(dif_eixoX > 3800) // 50 = Delta de tolerancia no deslocamento do eixo
-		{
-			if(x<150) x++;
-		}
-		// ------------------------------------------------------------------------
-		if(dif_eixoY < 1800)
-		{
-			if(y>0) y--;
-
-		}
-		else if(dif_eixoY > 3800)
-		{
-			if(y<120) y++;
-		}
-		// ------------------------------------------------------------------------
-		ST7735_draw_figure(x, y, soldado, ST7735_GREEN);
-
-		vTaskDelay(20);
-	}
-}
-//---------------------------------------------------------------------------------------------------
-void vTask_Print_Soldado(void *pvParameters)
-{
-	while(1)
-	{
-		ST7735_draw_figure(9, 30, soldado, ST7735_BLUE);
-		ST7735_draw_figure(9, 70, soldado, ST7735_GREEN);
-		vTaskDelay(500);
-	}
-}
-//---------------------------------------------------------------------------------------------------
-void vTask_Print_ValorADC(void *pvParameters)
-{
-	while(1)
-	{
-		ST7735_WriteString(75, 50, "     ", Font_7x10, ST7735_GREEN, ST7735_BLACK);
-		ST7735_write_nr(75, 50, valor_ADC[0], Font_7x10, ST7735_GREEN, ST7735_BLACK);
-
-		ST7735_WriteString(75, 60, "     ", Font_7x10, ST7735_GREEN, ST7735_BLACK);
-		ST7735_write_nr(75, 60, valor_ADC[1], Font_7x10, ST7735_GREEN, ST7735_BLACK);
-
-		vTaskDelay(500);
-	}
-}
-//---------------------------------------------------------------------------------------------------
 /* USER CODE END 0 */
 
 /**
@@ -167,7 +110,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  uint32_t semente_PRNG=1;
+  /* Hardware diagnostic build; game rules will be implemented separately. */
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -192,34 +135,11 @@ int main(void)
   MX_SPI1_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-
-	// inicializa LCD
-
-  HAL_Delay(100);
-  ST7735_Init();
-
-  ST7735_FillScreen(ST7735_BLACK);
-  ST7735_draw_figure(15, 8, fig_campo_minado, ST7735_WHITE);
-
-  ST7735_WriteString(42, 28,"Press Start!", Font_7x10, ST7735_RED, ST7735_BLACK);
-
-  // --------------------------------------------------------------------------------------
-  // inicializa nr. aleatorio e segue programção
-
-  while(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15))// quando pressionar a tecla come�a o jogo
-  {
-	  semente_PRNG++;
-  }
-  init_LFSR(semente_PRNG);	// inicializacao para geracao de numeros pseudoaleatorios
-
-
-
-  HAL_ADC_Start_DMA(&hadc1,(uint32_t*)ADC_buffer,2);
-
+  /* Display and ADC start in the diagnostic task after the scheduler starts. */
   /* USER CODE END 2 */
 
   /* Init scheduler */
-  osKernelInitialize();
+  if (osKernelInitialize() != osOK) Error_Handler();
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -242,13 +162,8 @@ int main(void)
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-
-    xTaskCreate(vTask_Print_ValorADC, "ADC do Joystick", 256, NULL, osPriorityNormal, NULL);
-  	xTaskCreate(vTask_Print_Soldado, "soldado", 256, NULL, osPriorityNormal, NULL);
-  	xTaskCreate(vTask_Move_Soldado, "soldado_anda", 256, NULL, osPriorityAboveNormal, NULL);
-
-
+  /* Only this task owns the display: transactions cannot interleave. */
+  if (defaultTaskHandle == NULL) Error_Handler();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -493,13 +408,59 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-	while(1)
-	{
-		  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+  (void)argument;
+  char line[24];
+  uint16_t previous_x = 2U, previous_y = 91U;
+  uint32_t led_ms = HAL_GetTick();
 
-		  osDelay(200);
-	}
+  HAL_Delay(100);
+  ST7735_Init();
+  ST7735_FillScreen(ST7735_BLACK);
+  ST7735_WriteString(2, 2, "MIC2 TESTE SPI1", Font_7x10, ST7735_WHITE, ST7735_BLACK);
+  ST7735_FillRectangle(2, 18, 50, 10, ST7735_RED);
+  ST7735_FillRectangle(55, 18, 50, 10, ST7735_GREEN);
+  ST7735_FillRectangle(108, 18, 50, 10, ST7735_BLUE);
+  ST7735_FillRectangle(1, 89, 158, 38, ST7735_WHITE);
+  ST7735_FillRectangle(2, 90, 156, 36, ST7735_BLACK);
+
+  if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC_buffer, 4) != HAL_OK)
+      Error_Handler();
+  TickType_t last_wake = xTaskGetTickCount();
+  for (;;)
+  {
+      /* A single aligned load keeps X/Y from different callbacks out of the UI. */
+      /* Copy sample and age together; an ISR cannot publish a future timestamp. */
+      taskENTER_CRITICAL();
+      uint32_t sample = adc_sample;
+      uint32_t updated_ms = adc_updated_ms;
+      uint8_t ready = adc_ready;
+      uint32_t now = HAL_GetTick();
+      taskEXIT_CRITICAL();
+      uint16_t x = (uint16_t)(sample >> 16);
+      uint16_t y = (uint16_t)sample;
+      snprintf(line, sizeof(line), "X A1: %4u", (unsigned)x);
+      ST7735_WriteString(2, 35, line, Font_7x10, ST7735_WHITE, ST7735_BLACK);
+      snprintf(line, sizeof(line), "Y A0: %4u", (unsigned)y);
+      ST7735_WriteString(2, 48, line, Font_7x10, ST7735_WHITE, ST7735_BLACK);
+      ST7735_WriteString(2, 61,
+          HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_RESET
+              ? "SW: PRESSIONADO" : "SW: SOLTO     ",
+          Font_7x10, ST7735_WHITE, ST7735_BLACK);
+      ST7735_WriteString(2, 74,
+          ready && (uint32_t)(now - updated_ms) < 250U
+              ? "ADC: OK       " : "ADC: SEM DADOS",
+          Font_7x10, ST7735_WHITE, ST7735_BLACK);
+      ST7735_FillRectangle(previous_x, previous_y, 4, 4, ST7735_BLACK);
+      previous_x = 2U + ((uint32_t)x * 152U) / 4095U;
+      previous_y = 91U + ((uint32_t)y * 30U) / 4095U;
+      ST7735_FillRectangle(previous_x, previous_y, 4, 4, ST7735_GREEN);
+      if ((uint32_t)(now - led_ms) >= 500U)
+      {
+          HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+          led_ms = now;
+      }
+      vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(50));
+  }
   /* USER CODE END 5 */
 }
 

@@ -1,4 +1,4 @@
-"""Build the unmodified teacher starter; Python 3 + GNU Arm Embedded required."""
+"""Build the hardware diagnostic derived from the teacher starter; Python 3 + GNU Arm Embedded required."""
 import argparse
 from pathlib import Path
 import shutil
@@ -40,4 +40,8 @@ subprocess.run([compiler, *target, *objects, f'-T{base / "STM32F411CEUX_FLASH.ld
                 '-Wl,--end-group', '-o', str(elf)], check=True)
 subprocess.run([compiler.replace('gcc', 'size'), str(elf)], check=True)
 print(f'Linked {len(objects)} objects: {elf}')
-print('Teacher starter only. No hardware execution or complete game validation performed.')
+for suffix, fmt in [('hex', 'ihex'), ('bin', 'binary')]:
+    target_file = elf.with_suffix('.' + suffix)
+    subprocess.run([compiler.replace('gcc', 'objcopy'), '-O', fmt, str(elf), str(target_file)], check=True)
+    print(f'Generated {target_file}')
+print('Hardware diagnostic only. Not executed on the board; not a complete game.')

@@ -7,12 +7,13 @@ definidos; não há jogo completo nesta etapa.
 
 ## Conteúdo
 
-- `Game_Start2_STM32F411CE/`: fontes e projeto CubeIDE originais, extraídos do ZIP.
+- `Game_Start2_STM32F411CE/`: base do professor adaptada para diagnóstico de hardware.
 - `referencias/Projeto_uC_II_2026_02.pdf`: enunciado original.
 - [Escopo](docs/ESCOPO.md): exigências, decisões pendentes e sequência de trabalho.
 - [Base do professor](docs/BASE_PROFESSOR.md): recursos existentes e pontos de revisão.
-- [Hardware](docs/HARDWARE.md): peças informadas, sinais propostos e identificação pendente.
-- `scripts/build_base.py`: compilação da base original pela linha de comando.
+- [Hardware](docs/HARDWARE.md): peças informadas, ligações definidas e identificação pendente.
+- `scripts/build_base.py`: compilação do diagnóstico pela linha de comando.
+- [Teste de bancada](docs/TESTE_BANCADA.md): gravação, resultado esperado e registro de ensaios.
 - [Origem](referencias/ORIGEM.md): identificação dos materiais e integridade das fontes.
 
 Não foram importados código, testes, pinagem ou regras do elevador. O exemplo
@@ -27,8 +28,10 @@ demonstração não representam um jogo já concluído.
    regenerar código a partir do `.ioc`.
 4. Confirmar placa, display, joystick e ligações antes de gravar/testar.
 
-As fontes extraídas foram preservadas. Saídas antigas `Debug/Release` do ZIP
-foram excluídas da importação para não apresentar binários antigos como novos.
+As fontes originais estão preservadas no histórico indicado em `referencias/ORIGEM.md`.
+A versão atual inicia diretamente um diagnóstico de tela, eixos e botão sob FreeRTOS.
+Não espera o botão para começar nem executa as três tarefas gráficas do exemplo.
+As saídas antigas `Debug/Release` do ZIP foram excluídas da importação.
 
 ## Compilação pela linha de comando
 
@@ -44,6 +47,8 @@ No Windows, se o compilador não estiver no PATH:
 python scripts/build_base.py --cc 'C:\caminho\tools\bin\arm-none-eabi-gcc.exe'
 ```
 
-O resultado vai para `build/base-professor.elf`. O script não grava o MCU e não
-altera as fontes do professor. A compilação confirma integração de código;
-funcionamento físico e requisitos completos do jogo exigem ensaios futuros.
+O resultado vai para `build/base-professor.elf`, `.hex` e `.bin`; o nome do arquivo
+foi mantido por compatibilidade, mas o conteúdo é o diagnóstico atual. O script
+não grava o MCU. Os mesmos arquivos são disponibilizados pelo GitHub Actions
+no artefato `mic2-diagnostico-spi1`. Funcionamento físico e requisitos completos
+do jogo exigem ensaios futuros. Siga o [roteiro de teste](docs/TESTE_BANCADA.md).

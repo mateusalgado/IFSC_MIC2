@@ -1,4 +1,4 @@
-name: Jogo - compilacao da base do professor
+name: Jogo - diagnostico de hardware
 on:
   push:
     paths:
@@ -19,5 +19,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Instalar compilador ARM
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends gcc-arm-none-eabi libnewlib-arm-none-eabi
-      - name: Compilar e ligar a base original
+      - name: Compilar o diagnostico
         run: python3 projeto-jogo/scripts/build_base.py
+      - name: Disponibilizar firmware para teste
+        uses: actions/upload-artifact@v4
+        with:
+          name: mic2-diagnostico-spi1
+          path: |
+            projeto-jogo/build/base-professor.elf
+            projeto-jogo/build/base-professor.hex
+            projeto-jogo/build/base-professor.bin
+          if-no-files-found: error
