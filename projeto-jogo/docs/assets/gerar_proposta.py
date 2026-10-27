@@ -1,0 +1,244 @@
+"""Render planning mockups with the project's bitmap fonts. Requires Pillow.
+
+This is documentation artwork, not firmware, a map exporter or a game simulator.
+Run from any directory: python docs/assets/gerar_proposta.py
+"""
+from collections import deque
+from pathlib import Path
+import re
+
+from PIL import Image, ImageDraw, ImageFont
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+SOURCE = ROOT / 'Game_Start2_STM32F411CE/Core/Src/fonts.c'
+
+
+def rgb565(value):
+    return ((value >> 11) * 255 // 31,
+            ((value >> 5) & 63) * 255 // 63, (value & 31) * 255 // 31)
+
+
+BG, PANEL, WALL, WHITE, GREEN, YELLOW, RED = map(
+    rgb565, [0x0843, 0x10A5, 0x94B2, 0xFFFF, 0x07E0, 0xFFE0, 0xF800])
+FONTS = {}
+source = SOURCE.read_text(encoding='utf-8', errors='replace')
+for width, height in [(7, 10), (11, 18), (16, 26)]:
+    match = re.search(r'Font' + str(width) + 'x' + str(height)
+                      + r'\s*\[\]\s*=\s*\{(.*?)\};', source, re.S)
+    assert match, (width, height)
+    values = [int(v, 16) for v in re.findall(r'0x[0-9A-Fa-f]+', match[1])]
+    assert len(values) >= 95 * height
+    FONTS[(width, height)] = values
+
+
+def text(image, x, y, label, color=WHITE, font=(7, 10)):
+    width, height = font
+    assert x >= 0 and y >= 0 and x + len(label) * width <= 160, label
+    assert y + height <= 128, label
+    draw = ImageDraw.Draw(image)
+    for character in label:
+        assert 32 <= ord(character) <= 126
+        offset = (ord(character) - 32) * height
+        for row in range(height):
+            bits = FONTS[font][offset + row]
+            for col in range(width):
+                if bits & (0x8000 >> col):
+                    draw.point((x + col, y + row), fill=color)
+        x += width
+
+
+def centered(image, y, label, color=WHITE, font=(7, 10)):
+    text(image, (160 - len(label) * font[0]) // 2, y, label, color, font)
+
+
+HEART = ['0110110', '1111111', '1111111', '1111111', '0111110', '0011100', '0001000']
+CLOCK = ['0011100', '0100010', '1001001', '1001101', '1000001', '0100010', '0011100']
+
+
+def icon(image, x, y, rows, color):
+    draw = ImageDraw.Draw(image)
+    for row, values in enumerate(rows):
+        for col, value in enumerate(values):
+            if value == '1':
+                draw.point((x + col, y + row), color)
+
+
+def hud(image, number, seconds, points=0, lives=3):
+    ImageDraw.Draw(image).rectangle((0, 0, 159, 15), fill=PANEL)
+    text(image, 2, 3, f'M{number:02d}')
+    for index in range(3):
+        icon(image, 26 + 9 * index, 4, HEART, RED if index < lives else WALL)
+    icon(image, 60, 4, CLOCK, YELLOW)
+    text(image, 70, 3, f'{seconds:02d}', YELLOW)
+    text(image, 112, 3, f'{points:05d}')
+
+
+MAPS = [
+    (14, [(12, 16), (50, 16), (50, 48), (96, 48), (96, 88), (144, 88)],
+     [[(28, 16), (28, 76), (62, 76)], [(50, 32), (78, 32)],
+      [(96, 64), (124, 64)]]),
+    (10, [(12, 16), (70, 16), (70, 38), (30, 38), (30, 66), (100, 66),
+          (100, 92), (146, 92)],
+     [[(48, 16), (48, 6)], [(70, 24), (132, 24), (132, 48)],
+      [(58, 66), (58, 92), (24, 92)]]),
+    (8, [(12, 12), (112, 12), (112, 32), (36, 32), (36, 52), (136, 52),
+         (136, 76), (70, 76), (70, 100), (146, 100)],
+     [[(58, 12), (58, 22)], [(36, 32), (12, 32), (12, 86), (48, 86)],
+      [(96, 52), (96, 64)], [(70, 76), (48, 76)]])
+]
+
+
+def map_mask(index):
+    width, route, branches = MAPS[index]
+    mask = Image.new('1', (160, 112), 1)  # 1 means wall
+    draw = ImageDraw.Draw(mask)
+    lo, hi = width // 2, (width - 1) // 2
+    for path in [route, *branches]:
+        for (ax, ay), (bx, by) in zip(path, path[1:]):
+            assert ax == bx or ay == by
+            draw.rectangle((min(ax, bx) - lo, min(ay, by) - lo,
+                            max(ax, bx) + hi, max(ay, by) + hi), fill=0)
+    for x, y in (route[0], route[-1]):
+        draw.rectangle((x - 7, y - 7, x + 6, y + 6), fill=0)
+    return mask
+
+
+def validate_preview(mask, start, end):
+    """Check that the illustrative layout fits the planned 5x5 player."""
+    pixels = mask.load()
+
+    def free(x, y):
+        if not (2 <= x <= 157 and 2 <= y <= 109):
+            return False
+        return not any(pixels[px, py] for px in range(x - 2, x + 3)
+                       for py in range(y - 2, y + 3))
+
+    assert free(*start) and free(*end)
+    seen, pending = {start}, deque([start])
+    while pending:
+        x, y = pending.popleft()
+        if (x, y) == end:
+            return
+        for next_point in [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]:
+            if next_point not in seen and free(*next_point):
+                seen.add(next_point)
+                pending.append(next_point)
+    raise ValueError('Preview has no 5x5 route')
+
+
+def game_screen(index):
+    screen = Image.new('RGB', (160, 128), BG)
+    mask = map_mask(index)
+    route = MAPS[index][1]
+    validate_preview(mask, route[0], route[-1])
+    field = Image.new('RGB', mask.size, BG)
+    field.paste(WALL, (0, 0, 160, 112), mask)
+    screen.paste(field, (0, 16))
+    draw = ImageDraw.Draw(screen)
+    ex, ey = route[-1]
+    ey += 16
+    draw.polygon([(ex, ey-4), (ex+4, ey), (ex, ey+4), (ex-4, ey)], outline=YELLOW)
+    x, y = route[0]
+    y += 16
+    draw.rectangle((x-2, y-2, x+2, y+2), fill=GREEN)
+    hud(screen, 1 + index * 3, [60, 50, 40][index], [0, 2400, 7500][index])
+    return screen
+
+
+def menu_screen():
+    screen = Image.new('RGB', (160, 128), BG)
+    centered(screen, 9, 'LABIRINTO', GREEN, (11, 18))
+    centered(screen, 31, 'DE PRECISAO')
+    draw = ImageDraw.Draw(screen)
+    draw.line([(58, 51), (100, 51), (100, 81), (58, 81), (58, 61),
+               (89, 61), (89, 71), (70, 71)], fill=WALL, width=3)
+    draw.rectangle((68, 69, 72, 73), fill=GREEN)
+    centered(screen, 94, '> INICIAR <', GREEN)
+    centered(screen, 113, 'APERTE O JOYSTICK')
+    return screen
+
+
+def ready_screen():
+    screen = Image.new('RGB', (160, 128), BG)
+    centered(screen, 10, 'MAPA 01', WHITE, (11, 18))
+    centered(screen, 34, 'PRIMEIRA PASSAGEM')
+    centered(screen, 50, 'FACIL / 60 s', GREEN)
+    centered(screen, 72, '3', YELLOW, (16, 26))
+    centered(screen, 112, 'PREPARE-SE')
+    return screen
+
+
+def pause_screen():
+    screen = game_screen(0)
+    draw = ImageDraw.Draw(screen)
+    draw.rectangle((20, 29, 139, 110), fill=BG, outline=WHITE)
+    centered(screen, 38, 'PAUSA', WHITE, (11, 18))
+    text(screen, 32, 68, '> CONTINUAR', GREEN)
+    text(screen, 46, 88, 'SAIR')
+    return screen
+
+
+def result_screen():
+    screen = Image.new('RGB', (160, 128), BG)
+    centered(screen, 4, 'MAPA CONCLUIDO', GREEN)
+    for y, label in [(23, 'BASE        500'), (36, 'TEMPO       150'),
+                     (49, 'PRECISAO    200'), (62, 'PENALIDADE    0')]:
+        text(screen, 13, y, label)
+    ImageDraw.Draw(screen).line((13, 77, 146, 77), fill=WALL)
+    centered(screen, 83, '+850', YELLOW, (11, 18))
+    centered(screen, 112, '> PROXIMO <', GREEN)
+    return screen
+
+
+def end_screen(victory=False):
+    screen = Image.new('RGB', (160, 128), BG)
+    centered(screen, 7, 'VOCE VENCEU' if victory else 'GAME OVER',
+             GREEN if victory else RED, (11, 18))
+    draw = ImageDraw.Draw(screen)
+    if victory:
+        draw.rectangle((74, 34, 85, 41), fill=YELLOW)
+        draw.rectangle((78, 42, 81, 47), fill=YELLOW)
+        draw.rectangle((73, 48, 86, 49), fill=YELLOW)
+        draw.line((73, 35, 69, 35, 69, 40, 73, 42), fill=YELLOW)
+        draw.line((86, 35, 90, 35, 90, 40, 86, 42), fill=YELLOW)
+    else:
+        centered(screen, 36, 'MOTIVO: PAREDE', RED)
+    centered(screen, 60, 'MAPAS: 9/9' if victory else 'MAPA: 04/09')
+    centered(screen, 78, 'PONTOS: 12850' if victory else 'PONTOS: 02400')
+    centered(screen, 108, '> REINICIAR <', GREEN)
+    return screen
+
+
+screens = [
+    ('01  Início', menu_screen()), ('02  Preparação', ready_screen()),
+    ('03  Fácil · corredor 14 px', game_screen(0)),
+    ('04  Médio · corredor 10 px', game_screen(1)),
+    ('05  Difícil · corredor 8 px', game_screen(2)),
+    ('06  Pausa', pause_screen()), ('07  Resultado do mapa', result_screen()),
+    ('08  Derrota', end_screen()), ('09  Vitória', end_screen(True))]
+
+
+def caption_font(size):
+    for candidate in ['C:/Windows/Fonts/segoeui.ttf',
+                      '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf']:
+        if Path(candidate).exists():
+            return ImageFont.truetype(candidate, size)
+    return ImageFont.load_default()
+
+
+sheet = Image.new('RGB', (1080, 1100), '#f4f3ef')
+draw = ImageDraw.Draw(sheet)
+draw.text((24, 18), 'Labirinto de Precisão', fill='#18232b', font=caption_font(26))
+draw.text((24, 54), 'Proposta visual · 160 × 128 pixels · fontes reais do projeto · ainda não implementada',
+          fill='#485560', font=caption_font(15))
+for index, (title, screen) in enumerate(screens):
+    col, row = index % 3, index // 3
+    x, y = 24 + 356 * col, 96 + 320 * row
+    draw.text((x, y), title, fill='#18232b', font=caption_font(17))
+    sheet.paste(screen.resize((320, 256), Image.Resampling.NEAREST), (x, y + 30))
+draw.text((24, 1067), 'Plantas e valores ilustrativos. A geometria final e o contraste serão validados na placa.',
+          fill='#485560', font=caption_font(15))
+HERE.mkdir(parents=True, exist_ok=True)
+sheet.save(HERE / 'proposta-visual.png')
+print('Rendered 9 screens; text bounds checked; all 3 illustrative routes fit a 5x5 player.')

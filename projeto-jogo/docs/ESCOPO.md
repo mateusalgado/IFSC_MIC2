@@ -1,72 +1,56 @@
-# Escopo do novo projeto
+# Escopo — Labirinto de Precisão
 
-## Requisitos do enunciado
+Atualizado em 27/10/2026. O usuário escolheu um jogo com diferentes plantas de
+labirinto, conduzindo um ponto pelo caminho sem tocar nas paredes. Também
+confirmou que deseja uma interface bonita e interativa, não inteligência artificial.
 
-- Projeto individual, com ideia submetida à aprovação do professor.
-- Jogo eletrônico em microcontrolador ARM empregando RTOS.
-- Display matricial e joystick.
-- Sons durante o jogo.
-- Tela inicial e tela final de game over.
-- Reinício através do joystick.
+## Requisitos da disciplina
+
+- Projeto individual em ARM com RTOS e ideia aprovada pelo professor.
+- Display matricial, joystick e sons.
+- Tela inicial e final de game over, com reinício através do joystick.
 - Pelo menos três níveis de dificuldade.
 
 A avaliação considera funcionamento, originalidade, criatividade, jogabilidade,
-imagens gráficas, montagem, qualidade e domínio de código/hardware e
-desenvolvimento em sala. Fonte: [enunciado original](../referencias/Projeto_uC_II_2026_02.pdf).
+imagens, montagem, qualidade e domínio do código/hardware e desenvolvimento em
+sala. Fonte: [enunciado](../referencias/Projeto_uC_II_2026_02.pdf).
 
-## Decisões ainda abertas
+## Proposta de entrega
 
-Tema, objetivo do jogador, comandos, vitória/derrota, pontuação e progressão.
-“Missão Circuito” foi sugerido, mas ainda não foi escolhido pelo usuário.
-Também confirmar a placa física, controlador/variante do display e circuito de som. A pinagem para o ensaio
-está definida; falta validá-la em bancada. Os componentes informados estão em [HARDWARE.md](HARDWARE.md).
+Campanha de nove mapas, três por dificuldade, três vidas e pontuação por mapa
+concluído. Paredes mais próximas e percursos mais complexos aumentam a dificuldade;
+o controle mantém resposta previsível. O nome Labirinto de Precisão é provisório.
 
-## Decisão de hardware em 27/10/2026
+As regras exatas, parâmetros iniciais, arquitetura e critérios de teste estão em
+[PLANO_LABIRINTO.md](PLANO_LABIRINTO.md). Telas, inventário de arte e fontes estão
+em [PLANO_VISUAL.md](PLANO_VISUAL.md). Esses documentos são a proposta v1; ainda
+não representam jogo implementado ou aprovação do professor.
 
-O usuário definiu **somente tela, joystick e sons, sem motor** para MIC2.
-A foto confirmou a inscrição “1.8 TFT SPI 128*160 V1.1” e os terminais do
-joystick “MH preto”. O buzzer ainda não foi adquirido. O controlador ST7735
-é a premissa do software, ainda a validar fisicamente.
-A ideia do elevador segue separadamente em MAQ.
+## Estado atual
 
-## Sequência de desenvolvimento
+- [x] Materiais do professor organizados e origem preservada.
+- [x] Pinagem definida: display SDA A7, SCK A5, CS B12, RESET B13, DC B14;
+  joystick VRY A0, VRX A1, SW C15; alimentação dos módulos em 3V3.
+- [x] Diagnóstico compilado e publicado no GitHub.
+- [x] Gravação e funcionamento do diagnóstico relatados pelo aluno.
+- [x] Conceito do jogo escolhido e plano v1 de regras/RTOS/interface elaborado.
+- [ ] Aprovação da ideia pelo professor.
+- [ ] Valores medidos de calibração, identificação do MCU e ensaio prolongado.
+- [ ] Implementação da FSM, tarefas, comunicação e primeiro mapa jogável.
+- [ ] Vidas, tempo, pontuação, pausa, derrota e reinício completos.
+- [ ] Três dificuldades jogáveis e nove mapas validados.
+- [ ] Buzzer escolhido, circuito dimensionado e áudio funcionando.
+- [ ] Arte final, testes, medições e relatório concluídos.
 
-1. Definir uma ideia simples, jogável e compatível com os requisitos; levar ao professor.
-2. Validar individualmente display, joystick e som na placa.
-3. Organizar a aplicação: estado do jogo, entrada, renderização e áudio, com
-   tarefas de responsabilidades claras e comunicação por filas quando necessária.
-4. Implementar uma primeira fase completa com início, interação, fim e reinício.
-5. Acrescentar três níveis com diferenças observáveis nas regras/dificuldade.
-6. Separar lógica independente de HAL e escrever testes das regras definidas.
-7. Medir resposta, uso de memória e interação das tarefas; registrar ensaios.
-8. Elaborar relatório final com decisões e evidências reais de implementação.
+O firmware disponível nesta revisão continua sendo o diagnóstico. O hardware
+segue com tela, joystick e som, sem motor. A ideia do elevador permanece em MAQ.
 
-Nesta etapa não há testes de jogabilidade ou relatório final, porque as regras
-ainda não foram escolhidas. O marco atual é o firmware de diagnóstico pronto para gravação; a validação
-na placa continua pendente.
+## Próxima entrega concreta
 
-## Trabalho a executar e critérios de conclusão
+Preservar a versão de diagnóstico e implementar um mapa fácil: ponto controlado
+pelo joystick, colisão com a área inteira, início e saída. Depois incorporar o
+ciclo de vidas/tempo/pontos e expandir para três dificuldades. A sequência M0–M6
+e seus critérios de conclusão estão no plano completo.
 
-- [x] Organizar materiais do professor e preservar a origem.
-- [x] Definir a ligação SPI1: SDA A7, SCK A5, CS B12, RESET B13, DC B14;
-  joystick VRY A0, VRX A1 e SW C15.
-- [x] Preparar diagnóstico com uma tarefa responsável pela tela e gerar firmware.
-- [ ] Executar o roteiro de bancada: cores, área útil, eixos, botão e estabilidade;
-  registrar centro, extremos e orientação do joystick.
-- [ ] Escolher e submeter ao professor a ideia do jogo. Proposta para discussão:
-  **Missão Circuito** — mover um robô, coletar componentes e evitar faíscas.
-  Ainda não é uma decisão aprovada.
-- [ ] Fechar regras: objetivo, pontuação, vidas, vitória/derrota, reinício pelo
-  botão e três dificuldades com diferenças mensuráveis (velocidade, quantidade
-  de obstáculos e/ou tempo disponível).
-- [ ] Selecionar buzzer e circuito; confirmar se PA8/TIM1_CH1 atende ao componente.
-- [ ] Projetar tarefas de entrada, lógica, renderização e áudio, com filas de
-  eventos/estado, prioridades justificadas e propriedade exclusiva do display.
-- [ ] Implementar estados INICIO, JOGANDO e GAME_OVER, debounce, calibração e
-  primeira partida completa; depois implementar a progressão dos três níveis.
-- [ ] Testar regras fora da placa e medir tempos, memória, pilhas e resposta na
-  montagem real; tratar falhas de ADC/display e reconciliar o `.ioc`.
-- [ ] Concluir relatório com arquitetura, esquema, decisões, resultados medidos,
-  fotos e limitações; anexar código e instruções de reprodução no GitHub.
-
-Não registrar como realizado um teste físico ou aprovação do professor sem evidência.
+Não marcar testes físicos, medições ou aprovação docente como realizados sem
+evidência. O relato funcional do aluno e os resultados medidos têm registros separados.

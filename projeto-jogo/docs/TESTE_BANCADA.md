@@ -66,7 +66,11 @@ com prescaler 8 (12 MHz nominais).
 
 ## Registrar o ensaio
 
-Status inicial: **pendente de execução na placa**. Preencher com medições reais:
+Status atualizado em 27/10/2026: **o aluno informou que gravou o firmware de
+teste e que tudo funcionou**. Trata-se de confirmação funcional relatada pelo
+usuário, não de medição independente. Ainda faltam valores de calibração,
+identificação legível do MCU, duração do ensaio e evidências fotográficas.
+Preencher os campos abaixo com medições reais:
 
 - Data, commit gravado e identificação legível do MCU: ______.
 - Imagem completa, orientação e sequência das três cores: ______.
@@ -88,6 +92,7 @@ que um módulo funciona apenas porque a compilação passou.
 Em 27/10/2026, o diagnóstico compilou e ligou 42 objetos com GNU Tools for STM32
 14.3.rel1 (GCC 14.3.1), sem avisos de `-Wall`. Resultado: text 31864 bytes,
 data 104 bytes e bss 21176 bytes. Foram gerados ELF, HEX e BIN.
-Isso confirma a compilação; ainda não houve gravação ou ensaio físico nesta etapa.
+Essa execução confirmou somente a compilação. Posteriormente, o aluno relatou
+gravação e funcionamento do diagnóstico; ver o registro de status acima.
 
 Próximas entregas: [ESCOPO.md](ESCOPO.md).

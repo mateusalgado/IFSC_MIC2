@@ -1,15 +1,28 @@
-# Projeto de Microcontroladores II — Jogo eletrônico
+# Projeto de Microcontroladores II — Labirinto de Precisão
 
 **Ponto de partida reiniciado em 27/10/2026.** Baseado em
 `Projeto_uC_II_2026_02.pdf` e `Game_Start2_STM32F411CE.zip`, enviados pelo professor.
-Hardware escolhido: tela, joystick e sons, sem motor. Tema e regras ainda serão
-definidos; não há jogo completo nesta etapa.
+Hardware escolhido: tela, joystick e sons, sem motor. Ideia definida pelo aluno:
+conduzir um ponto por diferentes mapas de labirinto sem tocar nas paredes.
+O diagnóstico foi gravado e relatado como funcionando pelo aluno. O firmware
+atual continua sendo esse diagnóstico; a implementação do jogo está planejada.
+
+## Plano para implementação
+
+O conceito foi escolhido pelo aluno; a aprovação do professor ainda está pendente.
+Regras e parâmetros abaixo constituem a proposta v1 para implementação e testes.
+
+- [Plano completo do jogo](docs/PLANO_LABIRINTO.md): objetivo, vidas, pontuação,
+  três dificuldades, mapas, FSM, tarefas, filas, testes e marcos de entrega.
+- [Interface e assets](docs/PLANO_VISUAL.md): telas, ícones, fontes e animações.
+- [Prévia das telas](docs/assets/proposta-visual.png): composição ilustrativa em
+  160 × 128; não é uma captura do firmware rodando.
 
 ## Conteúdo
 
 - `Game_Start2_STM32F411CE/`: base do professor adaptada para diagnóstico de hardware.
 - `referencias/Projeto_uC_II_2026_02.pdf`: enunciado original.
-- [Escopo](docs/ESCOPO.md): exigências, decisões pendentes e sequência de trabalho.
+- [Escopo](docs/ESCOPO.md): requisitos, decisões e situação das entregas.
 - [Base do professor](docs/BASE_PROFESSOR.md): recursos existentes e pontos de revisão.
 - [Hardware](docs/HARDWARE.md): peças informadas, ligações definidas e identificação pendente.
 - `scripts/build_base.py`: compilação do diagnóstico pela linha de comando.

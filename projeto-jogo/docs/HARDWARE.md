@@ -11,7 +11,8 @@ Em 27/10/2026: jogo com **tela, joystick e sons, sem motor**.
 
 A foto confirma o layout vermelho com leitor microSD e conector VCC, GND, CS,
 RESET, A0, SDA, SCK, LED. O fabricante e a marcação do controlador não estão
-legíveis; o ST7735 continua sendo a premissa do software a validar em bancada.
+legíveis. O aluno relatou funcionamento do diagnóstico com o driver ST7735;
+a identificação exata do controlador continua sem confirmação visual.
 A placa STM32 tem marcações abreviadas A0/A1/B12/C15 e alimentação 3V3/G.
 O modelo exato gravado no MCU não é legível na foto.
 
@@ -24,7 +25,7 @@ Não confundir A0 do display (dados/comando) com A0 da placa STM32.
 Decisão final: **SDA em A7 e SCK em A5**, mantendo a ligação original.
 As alternativas com A8/A9 ou SPI2 não foram adotadas.
 
-Display (compatibilidade ST7735 ainda será validada fisicamente):
+Display (funcionamento com o driver ST7735 relatado pelo aluno):
 
 - Clock SCK, por vezes identificado SCL: **PA5 / SPI1_SCK**.
 - Entrada de dados MOSI, por vezes identificada SDA: **PA7 / SPI1_MOSI**.
@@ -87,7 +88,9 @@ Deixar SD_CS, SD_MOSI, SD_MISO e SD_SCK desconectados; não há uso de microSD n
 Não é possível certificar as conexões atuais pela foto, pois as outras pontas
 dos fios dos módulos não aparecem.
 
-Faltam seleção e circuito do buzzer, identificação legível do MCU e testes reais.
+Faltam seleção e circuito do buzzer, identificação legível do MCU e medições
+de calibração/estabilidade. O teste funcional do diagnóstico foi relatado como
+bem-sucedido pelo aluno em 27/10/2026.
 PA8/A8 permanece reservado, sem ligação de buzzer nesta etapa. O firmware atual
 é o diagnóstico descrito em [TESTE_BANCADA.md](TESTE_BANCADA.md); a pinagem SPI1,
 ADC e botão do professor foi mantida.

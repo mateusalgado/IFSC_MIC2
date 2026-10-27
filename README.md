@@ -7,7 +7,10 @@ Materiais, exemplos e projeto da disciplina. O trabalho foi reiniciado em
 
 - [Laboratório FreeRTOS no STM32F411](README-labRTOS.md): 16 exemplos de tarefas,
   prioridades, comunicação, sincronização e interrupções, com USB CDC.
-- [Novo projeto: jogo eletrônico](projeto-jogo/README.md), ainda sem tema definido.
+- [Jogo: Labirinto de Precisão](projeto-jogo/README.md), com diagnóstico funcional
+  relatado pelo aluno e plano de implementação disponível.
+- [Plano do jogo e arquitetura RTOS](projeto-jogo/docs/PLANO_LABIRINTO.md).
+- [Interface, ícones e fontes](projeto-jogo/docs/PLANO_VISUAL.md).
 - [Requisitos e próximos passos](projeto-jogo/docs/ESCOPO.md).
 - [Revisão da base do professor](projeto-jogo/docs/BASE_PROFESSOR.md).
 - [Enunciado original](projeto-jogo/referencias/Projeto_uC_II_2026_02.pdf).
