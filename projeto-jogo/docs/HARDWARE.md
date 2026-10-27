@@ -4,22 +4,22 @@
 
 Em 27/10/2026: jogo com **tela, joystick e sons, sem motor**.
 
-- Display informado: **“1.8 TFT SPI 128*60 V1.1”**.
-- Joystick informado: **“MH preto”**.
+- Display: a foto posterior confirma a inscrição **“1.8 TFT SPI 128*160 V1.1”**.
+- Joystick: módulo com terminais **SW, VRY, VRX, +5V e GND**, confirmados na foto.
 - Buzzer: ainda não adquirido.
 - Placa STM32 física: modelo ainda não informado; o projeto do professor seleciona F411CEU6.
 
-“MH preto” não identifica sozinho fabricante, pinout ou componentes do joystick.
-O texto do display também não confirma controlador ou requisitos elétricos.
-Existem telas de 1,8 polegada com resolução 128×160 e ST7735S, como o
-[módulo da Waveshare](https://www.waveshare.com/wiki/1.8inch_LCD_Module), mas essa
-referência não identifica a placa do usuário. É possível que “128*60” tenha sido
-uma transcrição de “128*160”; isso ainda precisa ser confirmado pela inscrição.
+A foto confirma o layout vermelho com leitor microSD e conector VCC, GND, CS,
+RESET, A0, SDA, SCK, LED. O fabricante e a marcação do controlador não estão
+legíveis; o ST7735 continua sendo a premissa do software a validar em bancada.
+A placa STM32 tem marcações abreviadas A0/A1/B12/C15 e alimentação 3V3/G.
+O modelo exato gravado no MCU não é legível na foto.
 
 ## Sinais propostos a partir da base do professor
 
-Este mapa descreve funções, não a posição física dos conectores. Confirmar
-as inscrições do módulo e da placa antes da montagem.
+Usar os nomes impressos nos conectores, não a posição aparente dos fios na foto:
+A5 significa PA5, B12 significa PB12 e C15 significa PC15. G significa GND.
+Não confundir A0 do display (dados/comando) com A0 da placa STM32.
 
 Display, caso seja compatível com o ST7735/SPI da base:
 
@@ -28,8 +28,15 @@ Display, caso seja compatível com o ST7735/SPI da base:
 - Seleção CS: **PB12**.
 - Reset RST/RES: **PB13**.
 - Seleção dados/comando DC/A0: **PB14**.
-- GND: referência comum com o STM32.
-- VCC e LED/BL: **pendentes de identificar o módulo**, regulador e circuito de backlight.
+- GND: **G/GND** do STM32.
+- VCC: **3V3** do STM32, para o ensaio inicial.
+- LED: **3V3**, para iluminação contínua; não usar PC13 nem outro GPIO como alimentação.
+
+A opção de alimentação em 3,3 V e LED em 3,3 V corresponde à documentação do
+[módulo de mesmo layout V1.1](https://shillehtek.com/blogs/shillehtek-product-manuals/shillehtek-1-8-inch-tft-lcd-display-module-dual-side-soldering-manual)
+e do [MSP1803](https://www.lcdwiki.com/1.8inch_SPI_Module_ST7735S_SKU:MSP1803).
+Isso não comprova fabricante ou revisão elétrica da unidade fotografada. Não
+extrapolar a ligação para 5 V. Validar consumo, iluminação e imagem em bancada.
 
 SCL/SDA nessa lista são possíveis nomes impressos para sinais SPI; não significam
 que se deve configurar I²C. Não conectar terminal identificado apenas como LED
@@ -40,8 +47,10 @@ Joystick, caso seja o módulo passivo de dois potenciômetros e botão:
 - VRY, eixo Y, correspondente a `valor_ADC[0]`: **PA0 / ADC1_IN0**.
 - VRX, eixo X, correspondente a `valor_ADC[1]`: **PA1 / ADC1_IN1**.
 - Botão SW: **PC15**, com pull-up e fechamento para GND, como no exemplo.
-- GND: referência comum; alimentação proposta dos potenciômetros: **3,3 V**,
-  condicionada à confirmação do módulo e da alimentação analógica da placa.
+- GND: **G/GND** do STM32.
+- Terminal marcado **+5V** no joystick: conectar em **3V3**, não em 5 V.
+  O módulo de potenciômetros será alimentado em 3,3 V para que suas saídas
+  analógicas acompanhem a faixa de alimentação do ADC.
 
 O código do professor usa ADC[1] como X e ADC[0] como Y. Conferir as inscrições
 VRX/VRY e eventual inversão de sentido ao testar o joystick físico. PC15 também tem função de
@@ -66,9 +75,15 @@ para produzir diferentes notas. A escolha do circuito depende do componente:
 consultar os [exemplos de acionamento da Murata](https://www.murata.com/products/sound/library/basic/circuit)
 e o datasheet do modelo escolhido antes de dimensionar transistor e resistores.
 
-## Informação necessária para fechar o esquema
+## Preparação da bancada
 
-Conferir fotos legíveis da frente/verso do display, inscrições dos terminais do
-joystick e modelo da placa STM32. Com isso, fechar resolução/controlador,
-alimentação e backlight, posição de cada fio e seleção do buzzer/driver.
-As fontes do professor permanecem inalteradas até a escolha da implementação.
+Fazer conexões sem alimentação. Separar a placa STM32 da chapa metálica do leitor
+microSD vista na foto para evitar contato das soldas com a blindagem. Compartilhar
+3V3 e GND por protoboard/distribuição, sem sobrepor conectores num mesmo pino.
+Deixar SD_CS, SD_MOSI, SD_MISO e SD_SCK desconectados; não há uso de microSD no jogo.
+Não é possível certificar as conexões atuais pela foto, pois as outras pontas
+dos fios dos módulos não aparecem.
+
+Faltam seleção e circuito do buzzer, identificação legível do MCU e testes reais.
+PA8/A8 permanece reservado, sem ligação de buzzer nesta etapa. As fontes do
+professor permanecem inalteradas até a escolha da implementação.
