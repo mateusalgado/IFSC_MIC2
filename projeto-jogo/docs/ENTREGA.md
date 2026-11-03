@@ -1,4 +1,8 @@
+<img src="assets/ifsc-logo.png" alt="IFSC - Câmpus Florianópolis" width="30%" style="padding: 10px">
+
 # Entrega — Labirinto de Precisão
+
+[Sumário do projeto](../README.md) · [Relatório consolidado](RELATORIO.md)
 
 Revisão de 03/11/2026, **TUTORIAL v0.4**. Este é o índice para apresentação e
 conferência do trabalho. A campanha foi concluída na placa pelo aluno, sem
@@ -6,8 +10,11 @@ problemas relatados até o momento. O tutorial novo ainda precisa desse reteste.
 
 ## Material organizado no repositório
 
-- [README do projeto](../README.md): apresentação, imagem, conexões, código e uso,
-  seguindo a organização dos exemplos do repositório de MIC1.
+- [README do projeto](../README.md): capa com identidade IFSC, identificação,
+  descrição, imagem e sumário, seguindo o projeto de PROGOO.
+- Páginas numeradas com Retroceder/Sumário/Avançar:
+  [1. Análise](../analise.md), [2. Projeto](../projeto.md),
+  [3. Implementação](../implementacao.md) e [4. Testes](../testes.md).
 - [Relatório técnico](RELATORIO.md): requisitos, hardware, RTOS, estados, regras,
   memória, implementação, resultados e referências.
 - [Hardware](HARDWARE.md): pinagem e alimentação da montagem.

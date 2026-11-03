@@ -63,10 +63,27 @@ em uma cópia com CubeMX 6.18 e pacote oficial F4 v1.28.3. As bibliotecas origin
 do projeto principal foram preservadas. Procedimento e compatibilidade:
 [REGENERACAO.md](../docs/REGENERACAO.md).
 
-O README segue a organização de apresentação, conexões, imagens e estrutura do
+O README inicial seguiu a organização de apresentação, conexões, imagens e estrutura do
 [exemplo OLED de MIC1](https://github.com/mateusalgado/IFSC_MICROCONTROLADORESI/blob/master/apps/oled/README.md),
 consultado em 03/11/2026. O texto técnico descreve esta implementação STM32;
 não foram transplantados os parâmetros ou periféricos MSP430.
 Foram preparados [relatório](../docs/RELATORIO.md) e [índice de entrega](../docs/ENTREGA.md).
 A imagem `docs/assets/componentes-aluno.png` é a fotografia enviada pelo aluno
 na conversa, copiada sem edição; não representa ensaio de firmware nem montagem final.
+
+## Estrutura documental e logo IFSC (03/11/2026)
+
+Após correção da referência pelo aluno, a documentação passou a seguir o
+[projeto de PROGOO](https://github.com/mateusalgado/IFSC_PROGOO_PROJECT):
+logo no topo, identificação acadêmica, descrição, imagem, sumário numerado e
+quatro páginas com navegação Retroceder/Avançar. Os capítulos são Análise,
+Projeto, Implementação e Testes, adaptados ao firmware em C/FreeRTOS.
+O repositório de aulas indicado, IFSC_PROGOO, é distinto do repositório do projeto.
+
+`docs/assets/ifsc-logo.png` foi copiado sem edição de
+[img/ifsc-logo.png](https://github.com/mateusalgado/IFSC_PROGOO_PROJECT/blob/main/img/ifsc-logo.png).
+A marca pertence ao IFSC; sua utilização identifica o trabalho acadêmico,
+sem atribuir autoria da marca ao aluno ou indicar aprovação institucional.
+Referência institucional: [Identidade Visual do IFSC](https://www.ifsc.edu.br/identidade-visual).
+O nome do aluno foi conferido no README do projeto de referência. O professor de
+MIC2 permanece a confirmar; o nome do docente de PROGOO não foi transplantado.

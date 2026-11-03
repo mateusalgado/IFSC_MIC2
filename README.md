@@ -1,3 +1,5 @@
+<img src="projeto-jogo/docs/assets/ifsc-logo.png" alt="IFSC - Câmpus Florianópolis" width="30%" style="padding: 10px">
+
 # Microcontroladores II — IFSC
 
 Materiais, exemplos e projeto da disciplina. O trabalho foi reiniciado em
@@ -20,6 +22,14 @@ Materiais, exemplos e projeto da disciplina. O trabalho foi reiniciado em
 - [Enunciado original](projeto-jogo/referencias/Projeto_uC_II_2026_02.pdf).
 
 ## Usar o repositório
+
+A documentação do projeto segue o padrão de PROGOO, com capa, sumário e
+navegação entre quatro páginas:
+
+[**1. Análise**](projeto-jogo/analise.md) ·
+[**2. Projeto**](projeto-jogo/projeto.md) ·
+[**3. Implementação**](projeto-jogo/implementacao.md) ·
+[**4. Testes**](projeto-jogo/testes.md).
 
 ```sh
 git clone https://github.com/mateusalgado/IFSC_MIC2.git

@@ -1,9 +1,15 @@
+<img src="assets/ifsc-logo.png" alt="IFSC - Câmpus Florianópolis" width="30%" style="padding: 10px">
+
 # Relatório técnico — Labirinto de Precisão
+
+[Sumário do projeto](../README.md) · [1. Análise](../analise.md) ·
+[2. Projeto](../projeto.md) · [3. Implementação](../implementacao.md) ·
+[4. Testes](../testes.md)
 
 **Versão de trabalho: TUTORIAL v0.4 — 03/11/2026.**
 
-Disciplina: Microcontroladores II — IFSC. Autor e professor: preencher conforme
-a identificação acadêmica da entrega. Este relatório descreve o que está
+Disciplina: Microcontroladores II — IFSC. Aluno: Mateus Salgado Barboza Costa.
+Professor: identificação a confirmar para a entrega. Este relatório descreve o que está
 implementado e distingue ensaios automatizados, relato do aluno e medições
 pendentes. Não é uma declaração de aprovação docente ou de validação final.
 
@@ -256,3 +262,11 @@ resultados medidos por metas ou estimativas.
   revisão 50, cópia local consultada, páginas 49–51: comandos de geração.
 - STMicroelectronics, [STM32CubeF4 v1.28.3](https://github.com/STMicroelectronics/STM32CubeF4/tree/v1.28.3):
   referência de bibliotecas para o ensaio de regeneração.
+
+---
+
+<div align="center">
+
+[Sumário do projeto](../README.md) | [Testes](../testes.md) | [Entrega](ENTREGA.md)
+
+</div>
