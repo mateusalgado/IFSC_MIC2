@@ -9,11 +9,18 @@ executadas no STM32. A [prévia abaixo](assets/proposta-visual.png) é desenhada
 
 ## Interface implementada em 03/11/2026
 
-A versão **3 FASES v0.2** já desenha preparação com nome/dificuldade/tempo,
-os três mapas, resultado com pontos da fase e total, vidas restantes, avanço
-e vitória final. A [prévia da campanha](assets/campanha-renderizada.png) usa
-quadros do renderizador C em painel simulado, com valores de teste; não é foto
-da placa. Mascote e animações adicionais deste plano continuam pendentes.
+A versão **9 MAPAS v0.3** implementa menu JOGAR/COMO JOGAR, ajuda pelo joystick,
+seleção destacada com borda pulsante no menu, preparação com nome/dificuldade,
+nove segmentos de progresso, HUD com relógio e alerta vermelho nos últimos
+cinco segundos, resultados por fase e vitória final. Ciano identifica fácil,
+âmbar médio e rosa difícil, sempre acompanhados de texto na preparação/resultado.
+Paredes têm preenchimento escuro e contorno claro dentro da máscara de colisão;
+o ponto verde mantém exatamente 5×5, com centro branco. A saída segue em losango.
+
+Veja as [plantas](assets/campanha-renderizada.png) e as [telas implementadas](assets/interface-renderizada.png).
+As imagens vêm do renderizador C com display simulado, sem comprovar contraste
+ou tempo de resposta na placa. As fontes bitmap existentes foram preservadas.
+Mascote e animações adicionais abaixo são opcionais e continuam fora da versão.
 
 ## O que já existe e o que podemos reaproveitar
 

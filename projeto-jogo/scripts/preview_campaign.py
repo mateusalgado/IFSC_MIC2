@@ -1,4 +1,5 @@
-"""Compose the actual host renderer frames; optional documentation dependency: Pillow."""
+"""Compose actual C renderer frames; optional documentation dependency: Pillow."""
+import json
 from pathlib import Path
 from PIL import Image, ImageDraw
 
@@ -6,14 +7,27 @@ root = Path(__file__).resolve().parents[1]
 source = root/'build/host'
 scale, gap = 2, 16
 cell_w, cell_h = 160*scale, 128*scale+22
-sheet = Image.new('RGB', (3*cell_w+4*gap, 3*cell_h+4*gap), '#101827')
-draw = ImageDraw.Draw(sheet)
-for col, (map_id, title) in enumerate(((1, 'FASE 1 - FACIL'), (4, 'FASE 2 - MEDIO'), (7, 'FASE 3 - DIFICIL'))):
-    for row, prefix in enumerate(('preparar', 'mapa', 'resultado')):
-        frame = Image.open(source/f'{prefix}{map_id:02}.ppm').resize((160*scale,128*scale), Image.Resampling.NEAREST)
-        x, y = gap+col*(cell_w+gap), gap+row*(cell_h+gap)
+
+
+def sheet(frames, filename):
+    output = Image.new('RGB', (3*cell_w+4*gap, 3*cell_h+4*gap), '#101827')
+    draw = ImageDraw.Draw(output)
+    for index, (frame_name, title) in enumerate(frames):
+        frame = Image.open(source/f'{frame_name}.ppm').resize((160*scale,128*scale), Image.Resampling.NEAREST)
+        x, y = gap+(index%3)*(cell_w+gap), gap+(index//3)*(cell_h+gap)
         draw.text((x,y), title, fill='white')
-        sheet.paste(frame, (x,y+22))
-target = root/'docs/assets/campanha-renderizada.png'
-sheet.save(target)
-print(target)
+        output.paste(frame, (x,y+22))
+    target = root/'docs/assets'/filename
+    output.save(target)
+    print(target)
+
+
+maps = []
+for mid in range(1, 10):
+    data = json.loads((root/f'assets/maps/map{mid:02}.json').read_text())
+    maps.append((f'mapa{mid:02}', f"M{mid:02} - {data['name']}"))
+sheet(maps, 'campanha-renderizada.png')
+sheet([('inicio','MENU'),('ajuda','INSTRUCOES'),('preparar04','PREPARACAO'),
+       ('mapa05','JOGO'),('pausa','PAUSA'),('resultado06','RESULTADO'),
+       ('resultado09','ULTIMO MAPA'),('concluido','VITORIA'),('derrota','DERROTA')],
+      'interface-renderizada.png')

@@ -1,4 +1,4 @@
-"""Build Labirinto three-stage campaign or its optional hardware diagnostic; Python 3 + GNU Arm Embedded required."""
+"""Build Labirinto nine-stage campaign or its optional hardware diagnostic; Python 3 + GNU Arm Embedded required."""
 import argparse
 from pathlib import Path
 import shutil

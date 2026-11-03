@@ -6,7 +6,7 @@
 
 typedef enum {
     GAME_CALIBRATING, GAME_TITLE, GAME_READY, GAME_PLAYING, GAME_PAUSED,
-    GAME_HIT, GAME_RESULT, GAME_WON, GAME_OVER, GAME_FAULT
+    GAME_HIT, GAME_RESULT, GAME_WON, GAME_OVER, GAME_FAULT, GAME_HELP
 } GameState;
 typedef enum { GAME_NO_ERROR, GAME_WALL, GAME_TIMEOUT, GAME_ADC_ERROR,
                GAME_DISPLAY_ERROR, GAME_TIMING_ERROR, GAME_QUEUE_ERROR } GameReason;
@@ -21,7 +21,7 @@ typedef struct {
     uint32_t remaining_ms, active_ms, score, map_score;
     uint16_t collisions, timeouts;
     int32_t x_milli, y_milli;
-    uint8_t lives, pause_choice, map_index;
+    uint8_t lives, pause_choice, map_index, title_choice;
     bool menu_latched;
 } Game;
 void Game_Init(Game *game);

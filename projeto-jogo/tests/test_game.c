@@ -151,27 +151,54 @@ static void input(void)
     result=Joy_Update(&j,2048,2048,false,true);CHECK(!result.calibrated);
 }
 
-/* Deliberately explicit routes: test the generated C masks through the real FSM. */
-static const int routes[3][12][2] = {
-    {{50,16},{50,48},{96,48},{96,88},{144,88}},
-    {{68,16},{68,40},{28,40},{28,76},{100,76},{100,44},{144,44},{144,96}},
-    {{112,16},{112,36},{32,36},{32,56},{96,56},{96,76},{52,76},{52,96},
-     {120,96},{120,76},{144,76},{144,96}}
-};
-static const unsigned route_lengths[] = {5,8,12};
-
+/* Independent BFS on the compiled mask, then drive the real FSM at 10 ms.
+ * This does not assume that the JSON author's centerline is the only route. */
 static void finish_map(Game *g)
 {
-    unsigned stage=g->map_index;
-    for (unsigned p=0;p<route_lengths[stage];++p) {
-        for (unsigned i=0;i<1000 && g->state==GAME_PLAYING;++i) {
-            int dx=routes[stage][p][0]-Game_X(g), dy=routes[stage][p][1]-Game_Y(g);
+    const MazeMap *map=Maze_Get(g->map_index);
+    static int parent[MAZE_WIDTH*MAZE_HEIGHT], queue[MAZE_WIDTH*MAZE_HEIGHT];
+    for (unsigned i=0;i<MAZE_WIDTH*MAZE_HEIGHT;++i) parent[i]=-1;
+    int start=map->spawn_y*MAZE_WIDTH+map->spawn_x, goal=map->goal_y*MAZE_WIDTH+map->goal_x;
+    unsigned head=0,tail=0;
+    parent[start]=start;queue[tail++]=start;
+    while (head<tail && parent[goal]<0) {
+        int node=queue[head++],x=node%MAZE_WIDTH,y=node/MAZE_WIDTH;
+        const int dx[]={-1,1,0,0},dy[]={0,0,-1,1};
+        for (int k=0;k<4;++k) {
+            int nx=x+dx[k],ny=y+dy[k],next=ny*MAZE_WIDTH+nx;
+            if (Maze_Free(map,nx,ny) && parent[next]<0) {
+                parent[next]=node;queue[tail++]=next;
+            }
+        }
+    }
+    CHECK(parent[goal]>=0);
+    unsigned count=0;
+    for (int n=goal;n!=start;n=parent[n]) queue[count++]=n;
+    while (count && g->state==GAME_PLAYING) {
+        int node=queue[--count];
+        for (unsigned tick=0;tick<10 && g->state==GAME_PLAYING;++tick) {
+            int dx=node%MAZE_WIDTH-Game_X(g),dy=node/MAZE_WIDTH-Game_Y(g);
             if (!dx && !dy) break;
             move(g,dx>0?1000:dx<0?-1000:0,dy>0?1000:dy<0?-1000:0,1);
         }
-        CHECK(g->state==GAME_PLAYING || g->state==GAME_RESULT);
+        CHECK(g->state==GAME_RESULT || (g->state==GAME_PLAYING && Game_X(g)==node%MAZE_WIDTH && Game_Y(g)==node/MAZE_WIDTH));
     }
-    CHECK(g->state==GAME_RESULT && g->map_index==stage);
+    CHECK(g->state==GAME_RESULT);
+}
+
+static void title_menu(void)
+{
+    Game g;Game_Init(&g);Game_Tick(&g,&commands,10);
+    GameInput press=commands,hidden=commands;
+    press.click=true;hidden.click=true;hidden.render_ready=false;
+    Game_Tick(&g,&hidden,10);CHECK(g.state==GAME_TITLE);
+    move(&g,0,1000,20);CHECK(g.title_choice==1); /* held axis selects only once */
+    Game_Tick(&g,&press,10);CHECK(g.state==GAME_HELP);
+    Game_Tick(&g,&hidden,10);CHECK(g.state==GAME_HELP);
+    Game_Tick(&g,&press,10);CHECK(g.state==GAME_TITLE && g.title_choice==1);
+    move(&g,0,1000,20);CHECK(g.title_choice==1); /* no accidental repeat on return */
+    move(&g,0,0,1);move(&g,0,-1000,1);CHECK(g.title_choice==0);
+    Game_Tick(&g,&press,10);CHECK(g.state==GAME_READY && g.map_index==0 && g.score==0);
 }
 
 static void campaign(void)
@@ -185,7 +212,8 @@ static void campaign(void)
         CHECK(g.map_index==stage && g.state==GAME_PLAYING);
         CHECK(g.remaining_ms==map->limit_ms && g.active_ms==0 && g.map_score==0);
         CHECK(g.collisions==0 && g.timeouts==0 && g.score==total);
-        CHECK(map->difficulty==stage+1 && map->corridor_width==14-((stage==0)?0:stage==1?4:6));
+        CHECK(MAZE_COUNT==9 && map->id==stage+1 && map->difficulty==stage/3+1);
+        CHECK(map->corridor_width==(stage<3?14:stage<6?10:8));
         CHECK(Maze_Free(map,map->spawn_x,map->spawn_y));
         CHECK(Maze_Exit(map,map->goal_x,map->goal_y));
         CHECK(!Maze_Exit(map,map->goal_x-6,map->goal_y));
@@ -210,25 +238,25 @@ static void campaign(void)
             move(&g,-1000,0,30);CHECK(g.state==GAME_HIT && g.lives==2);
             playing(&g);
         }
-        if (stage==1) { /* Timeout refills this map's limit, without erasing penalties. */
+        if (stage>0) { /* Timeout refills this map's limit, without erasing penalties. */
             Game sample=g;sample.remaining_ms=10;
             Game_Tick(&sample,&commands,10);CHECK(sample.reason==GAME_TIMEOUT);
-            playing(&sample);CHECK(sample.remaining_ms==50000 && sample.timeouts==1);
+            playing(&sample);CHECK(sample.remaining_ms==map->limit_ms && sample.timeouts==1);
             CHECK(sample.score==total && sample.active_ms==10 && sample.lives==1);
             /* Failure on later map preserves earlier score; restart resets campaign. */
             sample.lives=1;sample.remaining_ms=10;Game_Tick(&sample,&commands,10);
-            CHECK(sample.state==GAME_OVER && sample.score==total && sample.map_index==1);
+            CHECK(sample.state==GAME_OVER && sample.score==total && sample.map_index==stage);
             Game_Tick(&sample,&press,10);
             CHECK(sample.state==GAME_READY && sample.map_index==0 && sample.score==0 && sample.lives==3);
         }
-        if (stage==2) {
+        if (stage==3 || stage==6) {
             Game sample=g;sample.remaining_ms=10;Game_Tick(&sample,&commands,10);
-            playing(&sample);CHECK(sample.remaining_ms==40000 && sample.timeouts==1 && sample.score==total);
+            playing(&sample);CHECK(sample.remaining_ms==map->limit_ms && sample.timeouts==1 && sample.score==total);
             Game_Tick(&g,&press,10);CHECK(g.state==GAME_PAUSED);
             uint32_t remaining=g.remaining_ms;move(&g,0,0,200);
-            CHECK(g.remaining_ms==remaining && g.score==total && g.map_index==2);
+            CHECK(g.remaining_ms==remaining && g.score==total && g.map_index==stage);
             Game_Tick(&g,&press,10);playing(&g);
-            CHECK(g.remaining_ms==remaining && g.map_index==2);
+            CHECK(g.remaining_ms==remaining && g.map_index==stage);
         }
         finish_map(&g);
         CHECK(g.lives==2 && g.remaining_ms>0);
@@ -245,20 +273,20 @@ static void campaign(void)
             Game_Tick(&g,&hidden,10);CHECK(g.neutral_ms==0 && g.countdown_ms==3000);
             move(&g,1000,0,400);CHECK(g.state==GAME_READY && g.countdown_ms==3000);
             playing(&g);
-        } else CHECK(g.state==GAME_WON && g.map_index==2);
+        } else CHECK(g.state==GAME_WON && g.map_index==stage);
     }
     move(&g,0,0,100);CHECK(g.score==total && g.state==GAME_WON);
     Game_Tick(&g,&press,10);
     CHECK(g.map_index==0 && g.score==0 && g.map_score==0 && g.lives==3 && g.remaining_ms==60000);
     CHECK(g.collisions==0 && g.timeouts==0 && g.active_ms==0 && g.state==GAME_READY);
-    CHECK(Game_Score(Maze_Get(1),30000,1,0)==1000);
-    CHECK(Game_Score(Maze_Get(2),55000,0,1)==900);
-    CHECK(Game_Score(Maze_Get(2),40000,30,30)==0);
+    CHECK(Game_Score(Maze_Get(3),30000,1,0)==1000);
+    CHECK(Game_Score(Maze_Get(6),55000,0,1)==900);
+    CHECK(Game_Score(Maze_Get(6),40000,30,30)==0);
 }
 
 int main(void)
 {
-    geometry(); easy_route(); lives_and_pause(); timing(); input(); campaign();
+    geometry(); easy_route(); lives_and_pause(); timing(); input(); title_menu(); campaign();
     CHECK(Game_Score(Maze_Get(0), 30000,0,0)==850);
     CHECK(Game_Score(Maze_Get(0), 30001,0,0)==845);
     CHECK(Game_Score(Maze_Get(0), 60000,0,0)==700);

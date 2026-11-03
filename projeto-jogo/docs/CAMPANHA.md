@@ -1,40 +1,81 @@
-# Campanha de três fases — v0.2
+# Campanha de nove mapas — v0.3
 
-Atualizada em **03/11/2026**. O firmware padrão agora percorre três mapas:
-fácil → médio → difícil, com resultado de cada fase, avanço pelo joystick,
-pontuação acumulada e vitória final. Identificação na tela: **3 FASES v0.2**.
+Atualizada em **03/11/2026**. O firmware padrão percorre nove mapas,
+três por dificuldade, com resultado de cada fase, avanço pelo joystick,
+pontuação acumulada e vitória final. Identificação na tela: **9 MAPAS v0.3**.
 
 A pinagem e a aquisição de joystick do diagnóstico validado pelo aluno foram
 preservadas. Os testes desta campanha foram executados no computador e a
 compilação ARM foi verificada; **o ensaio desta versão na placa está pendente**.
-O marco anterior de um mapa está registrado em [PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md).
+O marco anterior de um mapa está registrado em [PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md);
+a campanha intermediária de três fases está no commit `0b84598`.
 
-## Mapas desta versão
+## Nove mapas desta versão
 
-1. **Fase 1/3 — M01, Primeira passagem, fácil:** corredores de 14 pixels,
-   60 segundos, percurso central de 204 pixels e quatro curvas.
-2. **Fase 2/3 — M04, Cotovelos, médio:** corredores de 10 pixels,
-   50 segundos, percurso central de 356 pixels e sete curvas.
-3. **Fase 3/3 — M07, Zig-zag, difícil:** corredores de 8 pixels,
-   40 segundos, percurso central de 500 pixels e onze curvas.
+A sequência é **M01 → M02 → M03 → M04 → M05 → M06 → M07 → M08 → M09**.
+Três mapas por dificuldade; a dificuldade sobe após M03 e após M06.
+As geometrias de M01, M04 e M07 foram preservadas em relação à v0.2.
 
-Os identificadores M01/M04/M07 preservam a organização do plano de nove mapas.
-Nesta versão, **avançar em M01 leva diretamente a M04 e depois a M07**; não há
-seis fases ocultas. O ponto permanece 5×5 pixels, com velocidade máxima de
-24 pixels/s e controle proporcional. Entrada e saída têm câmaras de 14×14.
-As interseções/câmaras são mais largas que os trechos retos dos corredores.
+**Fácil — corredores de 14 pixels, 60 s por tentativa:**
 
-Cada arquivo JSON em `assets/maps/` define geometria, entrada, saída, nome,
-dificuldade e limite. O gerador valida o percurso para o ponto inteiro e uma
-busca de alcançabilidade. Os menores percursos ortogonais entre os centros são
-204, 336 e 482 pixels; o jogador pode cortar curvas dentro da área livre.
-Essas medidas verificam geometria, **não representam tempo medido na placa**.
+1. M01 — Primeira passagem: percurso central de 204 px, quatro curvas.
+2. M02 — Quatro cantos: 244 px, quatro curvas.
+3. M03 — Escolha a rota: 260 px, seis curvas.
 
-![Preparação, mapas e resultados desenhados pelo renderizador real](assets/campanha-renderizada.png)
+**Médio — corredores de 10 pixels, 50 s por tentativa:**
 
-Prévia gerada pelos testes com painel simulado em 160×128, ampliada sem suavização.
-Pontuações de exemplo usam 30 segundos por mapa sem erros; não são fotografias
-nem resultados de partidas físicas.
+4. M04 — Cotovelos: 356 px, sete curvas.
+5. M05 — Desvio: 352 px, sete curvas.
+6. M06 — Circuito interno: 380 px, seis curvas.
+
+**Difícil — corredores de 8 pixels, 40 s por tentativa:**
+
+7. M07 — Zig-zag: 500 px, onze curvas.
+8. M08 — Precisão: 472 px, dez curvas.
+9. M09 — Última saída: 492 px, oito curvas.
+
+O ponto permanece 5×5 pixels, com velocidade máxima de 24 pixels/s e controle
+proporcional. Entrada e saída têm câmaras de 14×14. Interseções/câmaras são mais
+largas que os trechos retos. Cada JSON em `assets/maps/` define uma planta fixa,
+com caminhos sem saída; não há geração aleatória no MCU.
+
+O gerador valida o percurso para o ponto inteiro, curvas, comprimento, bordas,
+metadados, diversidade das máscaras e alcançabilidade. Também rejeita um atalho
+que reduza o menor caminho ortogonal a menos de 80% do percurso central.
+Os menores caminhos entre centros são 204, 234, 232, 336, 332, 354, 482, 456 e
+470 px. Essas medidas são de geometria; tempos e dificuldade percebida ainda
+precisam ser medidos com pessoas jogando na placa.
+
+![Plantas dos nove mapas desenhadas pelo renderizador real](assets/campanha-renderizada.png)
+
+## Interface e controles
+
+- **Menu:** cima/baixo alterna JOGAR e COMO JOGAR; o botão confirma. Manter o
+  eixo inclinado não repete a seleção; centralizar antes de selecionar novamente.
+  A opção escolhida tem fundo destacado e uma borda que alterna a cada 500 ms.
+- **Ajuda:** instruções de movimento, colisão, saída e pausa. Botão VOLTAR retorna
+  ao menu, sem iniciar uma partida ou conceder pontos.
+- **Preparação:** fase N/9, nome do mapa, dificuldade escrita, tempo e nove
+  indicadores de progresso; centralização seguida de contagem 3–2–1.
+- **Durante o jogo:** paredes escuras contornadas por dentro da máscara de colisão,
+  ponto verde 5×5 com centro branco e saída em losango amarelo. A decoração não
+  invade corredores nem modifica a área de colisão.
+- **HUD:** número do mapa, três corações, ícone de relógio, segundos, pontos e
+  nove segmentos de progresso. Tempo fica vermelho nos últimos cinco segundos.
+- **Dificuldades:** ciano/fácil, âmbar/médio e rosa/difícil; texto acompanha as
+  cores na preparação e no resultado. O mapa atual também tem marcador branco.
+- **Pausa:** CONTINUAR/SAIR com seleção destacada, sem repetir movimento do eixo.
+- **Resultado:** pontos locais e acumulados, tempo ativo acumulado, vidas,
+  progresso e dificuldade da próxima fase. A nona fase indica campanha completa.
+- **Fim:** vitória após nove mapas ou derrota com fase alcançada, pontuação
+  e JOGAR NOVAMENTE. Nova campanha sempre começa em M01.
+
+![Menu, ajuda, preparação, jogo, pausa e resultados implementados](assets/interface-renderizada.png)
+
+Prévias do código C com display simulado em 160×128, ampliadas sem suavização.
+Pontuações de exemplo usam 30 segundos por mapa sem erros; não são fotos ou
+resultados de partidas físicas. Ícones e elementos gráficos são pequenos
+bitmaps/primitivas do código, sem imagens externas ou novas fontes.
 
 ## Regras de passagem e pontuação
 
@@ -50,7 +91,7 @@ nem resultados de partidas físicas.
   espera joystick centralizado e contagem 3–2–1. O display precisa confirmar a
   cena antes de aceitar avanço ou começar movimento; cliques durante a troca
   de tela não pulam a preparação.
-- Na terceira fase, **VER VITORIA** mostra **VOCE VENCEU / 3 FASES CONCLUIDAS**.
+- Na nona fase, **VER VITORIA** mostra **VOCE VENCEU / 9 MAPAS CONCLUIDOS**.
   Um novo clique reinicia desde M01 com três vidas e pontuação zero.
 - Derrota em qualquer fase mostra o motivo, a fase alcançada e os pontos dos
   mapas concluídos. O mapa incompleto não concede pontos. Reiniciar começa M01.
@@ -88,7 +129,7 @@ Preservar mudanças locais antes de resolver qualquer conflito. No STM32CubeIDE:
 3. Manter `APP_DIAGNOSTIC=0` em `Core/Inc/game_config.h`.
 4. Conferir que Run/Debug aponta para o `.elf` recém-compilado desse projeto.
 5. Gravar com ST-Link; se parar no início da depuração, usar Resume.
-6. Deixar o joystick solto ao iniciar e conferir **3 FASES v0.2** no título.
+6. Deixar o joystick solto ao iniciar e conferir **9 MAPAS v0.3** no título.
 
 **Não regenerar pelo `.ioc` ainda:** a divergência HSE/HSI herdada permanece
 pendente. O código compilado preserva o HSI/PLL a 96 MHz da base testada.
@@ -115,15 +156,17 @@ A opção `--diagnostic` continua produzindo `diagnostico-spi1.*` e o artefato
 
 ## Implementação e verificações
 
-- Catálogo imutável `MazeMap`: três máscaras de 2240 bytes, **6720 bytes de
+- Catálogo imutável `MazeMap`: nove máscaras de 2240 bytes, **20160 bytes de
   geometria na Flash**, além dos metadados. Colisão e desenho usam o mesmo mapa.
 - Snapshot `Game` leva índice da fase, pontos locais e total; apenas a tarefa
   de lógica altera a campanha. Mantidas três tarefas, filas e dono único do SPI.
-- Novo estado `GAME_RESULT`: pontuação é concedida somente ao sair de
+- Estado `GAME_RESULT`: pontuação é concedida somente ao sair de
   `GAME_PLAYING`; confirmação do resultado avança uma única fase ou abre vitória.
 - Renderizador usa entrada, saída, nome e limite do catálogo. O HUD identifica
-  M01/M04/M07; preparação e resultado mostram fase 1/3, 2/3 ou 3/3.
-- Restauração parcial do fundo e losango da saída verificada nos três mapas.
+  M01 até M09; preparação e resultado mostram fase N/9.
+- Novo estado `GAME_HELP` e seleção de título; `title_choice` faz parte do
+  snapshot. Mantidos a liberação do eixo e o evento único de clique.
+- Restauração parcial do fundo e losango da saída verificada nos nove mapas.
 
 Com Python 3 e GCC/Clang (Linux/WSL), a partir de `projeto-jogo`:
 
@@ -132,11 +175,14 @@ python3 scripts/generate_map.py --check
 python3 scripts/test_host.py --sanitize
 ```
 
-Resultados desta revisão: **1838 verificações** da lógica/entrada/geometria,
-percurso completo pelos três mapas, conservação de vidas e pontos, penalidades,
+Resultados desta revisão: **8333 verificações** da lógica/entrada/geometria,
+percurso completo pelos nove mapas, conservação de vidas e pontos, penalidades,
 pausa, timeout por dificuldade, derrota em fase posterior, confirmação de tela,
-vitória e reinício. Também passaram testes dos dez estados visuais, limites de
-texto, atualização parcial/completa e driver SPI simulado, com ASan/UBSan.
+vitória e reinício. Também passaram testes dos onze estados visuais, limites de
+texto, equivalência entre quadro completo e atualização parcial nos menus,
+contagem, pausa, alerta de tempo e mapas, além do driver SPI simulado, com ASan/UBSan.
+O teste percorre os mapas pela máquina de estados usando caminhos descobertos
+por BFS sobre as máscaras compiladas; não depende da rota sugerida no JSON.
 Os testes do computador não simulam os tempos do escalonador nem a montagem.
 
 A prévia pode ser reproduzida após os testes com
@@ -144,7 +190,7 @@ A prévia pode ser reproduzida após os testes com
 
 Compilação ARM local com GCC 14.3.1, 48 objetos, `-O0 -Wall`, sem avisos:
 
-- Campanha: text 57124, data 120 e bss 24264 bytes.
+- Campanha: text 72516, data 120 e bss 24272 bytes.
 - Diagnóstico: text 32228, data 104 e bss 21616 bytes.
 
 BSS inclui heap reservado do RTOS e não mede uso máximo durante o jogo. Verificar
@@ -153,20 +199,25 @@ na placa `game_input_stack_free`, `game_logic_stack_free`, `game_render_stack_fr
 
 ## Roteiro de bancada e registro
 
-- [ ] Identificação **3 FASES v0.2**, commit gravado e calibração concluída.
+- [ ] Identificação **9 MAPAS v0.3**, commit gravado e calibração concluída.
+- [ ] Cima/baixo seleciona JOGAR/COMO JOGAR; ajuda abre e retorna corretamente.
 - [ ] Orientação correta e parada imediata ao soltar o joystick.
-- [ ] M01 concluído; resultado exibe pontos e confirmação leva a M04.
-- [ ] M04 inicia com 50 s, corredor mais estreito e vidas/pontos preservados.
-- [ ] M04 concluído; confirmação leva a M07 com 40 s.
-- [ ] M07 concluído; resultado, vitória final e reinício em M01 funcionam.
+- [ ] M01, M02 e M03 acessíveis em sequência, com 60 s cada.
+- [ ] M03 → M04 muda para médio/50 s; M04, M05 e M06 acessíveis.
+- [ ] M06 → M07 muda para difícil/40 s; M07, M08 e M09 acessíveis.
+- [ ] Vidas e pontos preservados entre todas as fases, sem reposição de vidas.
+- [ ] M09 concluído; resultado, vitória final e reinício em M01 funcionam.
 - [ ] Uma colisão desconta exatamente uma vida em cada dificuldade.
-- [ ] Timeout em M04/M07 restaura 50/40 s quando resta vida; total preservado.
+- [ ] Timeout restaura 60/50/40 s conforme o mapa quando ainda resta vida.
 - [ ] Pausa/retomada não mudam fase, posição ou tempo restante.
 - [ ] Derrota em fase posterior mantém pontos anteriores; reinício zera tudo.
 - [ ] Botão segurado não pula fases e não duplica pontos.
-- [ ] Registrar fotos/vídeo, tempos de conclusão e observações de dificuldade.
+- [ ] Contraste de paredes/ponto, leitura do HUD e seleção do menu confortáveis.
+- [ ] Registrar fotos/vídeo, tempos de conclusão e dificuldade de cada mapa.
 - [ ] Sessão contínua de 30 minutos e medições de pilha/heap/atrasos.
 
-**Pendências:** ensaio físico e ajuste de dificuldade, seis mapas restantes,
-áudio (buzzer/circuito ainda não escolhidos), acabamento visual, reconciliação
-do `.ioc`, aprovação da ideia e relatório final com resultados medidos.
+**Pendências:** ensaio físico e ajuste de dificuldade/contraste, áudio
+(buzzer/circuito ainda não escolhidos), reconciliação do `.ioc`, aprovação da
+ideia e relatório final com resultados medidos. Mascote e animações adicionais
+são opcionais. Não considerar o trabalho da disciplina concluído sem som e
+validação da montagem.

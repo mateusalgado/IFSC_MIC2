@@ -5,7 +5,7 @@
 Hardware escolhido: tela, joystick e sons, sem motor. Ideia definida pelo aluno:
 conduzir um ponto por diferentes mapas de labirinto sem tocar nas paredes.
 O diagnóstico foi gravado e relatado como funcionando pelo aluno. A versão atual
-é **3 FASES v0.2**, com mapas fácil, médio e difícil, três vidas compartilhadas,
+é **9 MAPAS v0.3**, com três mapas por dificuldade e três vidas compartilhadas,
 tempo, pausa, colisão, pontuação acumulada e vitória final. Esta versão aguarda
 teste na placa pelo aluno.
 
@@ -14,9 +14,14 @@ teste na placa pelo aluno.
 Siga [CAMPANHA.md](docs/CAMPANHA.md) para atualizar o clone, compilar,
 gravar e testar. O build padrão executa o jogo; o diagnóstico continua disponível
 com `APP_DIAGNOSTIC=1` ou `--diagnostic` no script. A tela inicial identifica
-**LABIRINTO / 3 FASES v0.2**. A sequência atual é M01 → M04 → M07, um mapa
-por dificuldade. Há resultado de cada fase, avanço por clique e vitória após
-a terceira fase. Ainda não há áudio nem os seis mapas restantes do plano.
+**LABIRINTO / 9 MAPAS v0.3**. A campanha percorre M01 até M09: mapas 1–3
+fáceis, 4–6 médios e 7–9 difíceis. Há resultado de cada fase, avanço por clique
+e vitória após o mapa 9. O menu oferece JOGAR e COMO JOGAR; cima/baixo seleciona
+e o botão confirma. Áudio e validação física desta versão continuam pendentes.
+
+Veja as [plantas dos nove mapas](docs/assets/campanha-renderizada.png) e a
+[interface implementada](docs/assets/interface-renderizada.png), geradas pelo
+renderizador C com display simulado.
 
 ## Plano para implementação
 
@@ -31,7 +36,7 @@ Regras e parâmetros abaixo constituem a proposta v1 para implementação e test
 
 ## Conteúdo
 
-- `Game_Start2_STM32F411CE/`: base do professor adaptada para três fases e diagnóstico opcional.
+- `Game_Start2_STM32F411CE/`: base do professor adaptada para nove mapas e diagnóstico opcional.
 - `referencias/Projeto_uC_II_2026_02.pdf`: enunciado original.
 - [Escopo](docs/ESCOPO.md): requisitos, decisões e situação das entregas.
 - [Base do professor](docs/BASE_PROFESSOR.md): recursos existentes e pontos de revisão.

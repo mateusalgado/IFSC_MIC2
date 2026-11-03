@@ -6,7 +6,7 @@
 #define MAZE_WIDTH 160
 #define MAZE_HEIGHT 112
 #define MAZE_BYTES (MAZE_WIDTH * MAZE_HEIGHT / 8)
-#define MAZE_COUNT 3U
+#define MAZE_COUNT 9U
 typedef struct {
     const uint8_t *walls;
     const char *name;
@@ -15,7 +15,7 @@ typedef struct {
     uint8_t spawn_x, spawn_y, goal_x, goal_y;
 } MazeMap;
 extern const MazeMap maze_maps[MAZE_COUNT];
-/* Index is the campaign position (0..2), not the planned map id (1,4,7). */
+/* Index is the campaign position (0..8); displayed ids are 1..9. */
 const MazeMap *Maze_Get(unsigned index);
 const char *Maze_Difficulty(const MazeMap *map);
 bool Maze_Wall(const MazeMap *map, int x, int y);

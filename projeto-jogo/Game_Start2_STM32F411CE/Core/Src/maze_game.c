@@ -93,6 +93,21 @@ void Game_Tick(Game *g, const GameInput *in, uint32_t dt)
         if (in->valid && in->calibrated) state(g, GAME_TITLE);
         break;
     case GAME_TITLE:
+        if (!in->render_ready) break;
+        if (in->y == 0) g->menu_latched = false;
+        if (!g->menu_latched && (in->y > 500 || in->y < -500)) {
+            g->title_choice ^= 1U; g->menu_latched = true;
+        }
+        if (in->click && in->calibrated) {
+            if (g->title_choice) state(g, GAME_HELP);
+            else start(g);
+        }
+        break;
+    case GAME_HELP:
+        if (in->click && in->render_ready) {
+            g->menu_latched = true; state(g, GAME_TITLE);
+        }
+        break;
     case GAME_WON:
     case GAME_OVER:
         if (in->click && in->calibrated && in->render_ready) start(g);
@@ -143,7 +158,9 @@ void Game_Tick(Game *g, const GameInput *in, uint32_t dt)
             g->pause_choice ^= 1U; g->menu_latched = true;
         }
         if (in->click) {
-            if (g->pause_choice) state(g, GAME_TITLE);
+            if (g->pause_choice) {
+                g->title_choice = 0; g->menu_latched = true; state(g, GAME_TITLE);
+            }
             else { g->countdown_ms = 0; state(g, GAME_READY); }
         }
         break;

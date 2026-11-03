@@ -1,6 +1,6 @@
 # Diagnóstico opcional de bancada
 
-O build padrão agora é o [jogo de três fases](CAMPANHA.md). Para esta
+O build padrão agora é o [jogo de nove mapas](CAMPANHA.md). Para esta
 tela de diagnóstico, usar `--diagnostic` no script ou `APP_DIAGNOSTIC=1` em
 `game_config.h` no CubeIDE, seguido de Clean/Build.
 

@@ -12,15 +12,16 @@ de duração e calibração numérica continuam pendentes. O marco atual do jogo
 
 ## Atualização de implementação
 
-**03/11/2026 — 3 FASES v0.2:** implementados os mapas M01 (fácil), M04
-(médio) e M07 (difícil), resultado por fase, avanço, vidas compartilhadas,
-pontos acumulados e vitória final. O catálogo é constante na Flash, compartilhado
-pelo desenho e pela colisão. Testes no computador percorrem a campanha inteira.
-Ensaio físico, áudio, seis mapas restantes e acabamento continuam pendentes.
-A calibração usa zona morta sem a histerese adicional proposta abaixo; a
-regeneração do `.ioc` ainda não foi validada. Consulte [CAMPANHA.md](CAMPANHA.md)
-para instruções e limites. As seções seguintes preservam o plano da entrega
-completa de nove mapas; seus nomes/quantidades são metas, não estado concluído.
+**03/11/2026 — 9 MAPAS v0.3:** os nove mapas estão implementados em sequência,
+com três por dificuldade, resultado por fase, vidas compartilhadas, pontos
+acumulados e vitória final. O menu oferece instruções pelo joystick, e a
+interface mostra progresso, cores de dificuldade e paredes contornadas.
+O gerador valida dimensões, curvas, distâncias, alcançabilidade do ponto 5×5 e
+atalhos indesejados. Os testes percorrem M01 até M09 pela lógica real.
+Ensaio físico, áudio, regeneração do `.ioc` e relatório com medições continuam
+pendentes. A calibração ainda usa zona morta sem a histerese adicional proposta.
+Consulte [CAMPANHA.md](CAMPANHA.md) para instruções, limites e resultados atuais.
+As seções seguintes preservam as metas e decisões do plano completo.
 
 ## 1. Experiência do jogador
 
@@ -49,7 +50,8 @@ artificial. Ver o [plano visual](PLANO_VISUAL.md).
 - Joystick X/Y: movimento proporcional à inclinação, com diagonal normalizada
   para não andar mais rápido que nos eixos.
 - Soltar o joystick: parar, sem inércia. Filtragem não deve deixar o ponto deslizar.
-- Botão na tela inicial: iniciar; durante a partida: pausar.
+- Tela inicial: cima/baixo seleciona JOGAR ou COMO JOGAR; botão confirma.
+- Botão durante a partida: pausar. Na ajuda, botão volta ao menu.
 - Na pausa, cima/baixo escolhe CONTINUAR ou SAIR; botão confirma. SAIR retorna
   ao início e encerra a campanha, sem conceder pontos pelo mapa incompleto.
 - No resultado de mapa: botão avança; em GAME OVER/VITORIA: botão reinicia.
@@ -132,7 +134,7 @@ da saída. Nomes: Primeira passagem, Quatro cantos, Escolha a rota.
 
 **Médio — mapas 4 a 6, 50 s por tentativa.** Corredores com largura livre mínima
 de 10 pixels, 6–8 curvas e mais caminhos sem saída. Caminho principal pretendido
-de 260–380 pixels. Nomes: Corredores, Desvio, Circuito interno.
+de 260–380 pixels. Nomes: Cotovelos, Desvio, Circuito interno.
 
 **Difícil — mapas 7 a 9, 40 s por tentativa.** Corredores com largura livre mínima
 de 8 pixels, 8–12 curvas e trechos estreitos mais longos. Caminho principal
@@ -146,7 +148,7 @@ A largura é medida no espaço livre real, não entre centros de paredes.
 Os comprimentos e quantidades de curvas são metas de autoria, a verificar em
 cada mapa definitivo. Não gerar labirintos aleatórios na primeira entrega:
 mapas fixos permitem comparar tentativas e reproduzir os testes. A versão
-mínima jogável terá três mapas, um de cada nível; a entrega planejada terá nove.
+intermediária v0.2 entregou três mapas; a v0.3 implementa os nove planejados.
 
 ## 5. Formato dos mapas e colisão
 
@@ -178,7 +180,9 @@ mínima jogável terá três mapas, um de cada nível; a entrega planejada terá
 stateDiagram-v2
     [*] --> CALIBRANDO
     CALIBRANDO --> INICIO: entrada valida
-    INICIO --> PREPARAR: novo clique
+    INICIO --> AJUDA: selecionar COMO JOGAR / clique
+    AJUDA --> INICIO: clique
+    INICIO --> PREPARAR: selecionar JOGAR / clique
     PREPARAR --> JOGANDO: tela pronta / neutro / contagem
     JOGANDO --> PAUSA: clique
     PAUSA --> PREPARAR: continuar / manter posicao e tempo

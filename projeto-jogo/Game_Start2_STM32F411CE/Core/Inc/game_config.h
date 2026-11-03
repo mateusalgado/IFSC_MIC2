@@ -4,7 +4,7 @@
 #ifndef APP_DIAGNOSTIC
 #define APP_DIAGNOSTIC 0
 #endif
-#define GAME_VERSION "3 FASES v0.2"
+#define GAME_VERSION "9 MAPAS v0.3"
 #define GAME_STEP_MS 10U
 #define GAME_RENDER_MS 33U
 #define GAME_SPEED_PX_S 24

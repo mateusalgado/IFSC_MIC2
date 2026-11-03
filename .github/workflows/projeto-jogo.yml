@@ -1,4 +1,4 @@
-name: Jogo - tres fases e testes
+name: Jogo - nove mapas e testes
 on:
   push:
     paths:
@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Instalar compilador ARM
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends gcc-arm-none-eabi libnewlib-arm-none-eabi
-      - name: Compilar a campanha de tres fases
+      - name: Compilar a campanha de nove mapas
         run: python3 projeto-jogo/scripts/build_base.py
       - name: Compilar o diagnostico opcional
         run: python3 projeto-jogo/scripts/build_base.py --diagnostic

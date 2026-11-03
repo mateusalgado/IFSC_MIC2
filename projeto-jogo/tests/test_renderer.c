@@ -42,12 +42,38 @@ static void save(const char *directory,const char *name)
     }
     fclose(out);
 }
+static void same_as_full(const Game *g)
+{
+    memcpy(saved,screen,sizeof(saved));Renderer_Init();Renderer_Draw(g);
+    assert(memcmp(saved,screen,sizeof(saved))==0);
+}
+static void interactive_states(void)
+{
+    Game g;Game_Init(&g);g.state=GAME_TITLE;g.scene++;
+    Renderer_Draw(&g);g.title_choice=1;g.state_ms=500;Renderer_Draw(&g);same_as_full(&g);
+    g.title_choice=0;g.state_ms=1000;Renderer_Draw(&g);same_as_full(&g);
+    g.state=GAME_READY;g.scene++;g.countdown_ms=3000;Renderer_Draw(&g);
+    g.neutral_ms=200;Renderer_Draw(&g);same_as_full(&g);
+    for (unsigned count=2;count>0;--count) {
+        g.countdown_ms=count*1000;Renderer_Draw(&g);same_as_full(&g);
+    }
+    g.neutral_ms=0;Renderer_Draw(&g);same_as_full(&g);
+    g.neutral_ms=200;g.countdown_ms=0;Renderer_Draw(&g);same_as_full(&g);
+    g.state=GAME_PLAYING;g.scene++;g.x_milli=12000;g.y_milli=16000;
+    g.lives=3;g.remaining_ms=6000;g.score=16800;Renderer_Draw(&g);
+    g.remaining_ms=5000;Renderer_Draw(&g);same_as_full(&g);
+    g.state=GAME_PAUSED;g.scene++;Renderer_Draw(&g);
+    g.pause_choice=1;Renderer_Draw(&g);same_as_full(&g);
+}
+
 int main(int argc,char **argv)
 {
     assert(argc==2);
+    interactive_states();
+    Renderer_Init();
     Game g;Game_Init(&g);g.lives=3;g.remaining_ms=60000;g.x_milli=12000;g.y_milli=16000;
-    const char *names[]={"calibracao","inicio","preparar","mapa01","pausa","impacto","resultado","concluido","derrota","falha"};
-    for (int state=GAME_CALIBRATING;state<=GAME_FAULT;++state) {
+    const char *names[]={"calibracao","inicio","preparar","mapa01","pausa","impacto","resultado","concluido","derrota","falha","ajuda"};
+    for (int state=GAME_CALIBRATING;state<=GAME_HELP;++state) {
         g.state=(GameState)state;g.scene++;g.reason=GAME_WALL;
         g.lives=state==GAME_OVER?0:state==GAME_HIT?2:3;
         g.score=state==GAME_WON?850:0;
@@ -63,6 +89,12 @@ int main(int argc,char **argv)
         Renderer_Draw(&g);snprintf(name,sizeof(name),"preparar%02u",map->id);save(argv[1],name);
         g.state=GAME_PLAYING;g.scene++;
         Renderer_Draw(&g);snprintf(name,sizeof(name),"mapa%02u",map->id);save(argv[1],name);
+        for (int y=0;y<MAZE_HEIGHT;++y) for (int x=0;x<MAZE_WIDTH;++x) {
+            uint16_t color=screen[y+16][x];
+            if (Maze_Wall(map,x,y)) assert(color!=0x0843 && color!=0xffe0 && color!=0x07e0);
+            else if (abs(x-Game_X(&g))>2 || abs(y-Game_Y(&g))>2)
+                assert(color==0x0843 || color==0xffe0); /* decorations never fill corridors */
+        }
         for (int x=13;x<=48;++x) { g.x_milli=x*1000;Renderer_Draw(&g); }
         memcpy(saved,screen,sizeof(saved));
         Renderer_Init();Renderer_Draw(&g);
@@ -72,10 +104,11 @@ int main(int argc,char **argv)
         Renderer_Draw(&g);g.x_milli-=3000;Renderer_Draw(&g);
         memcpy(saved,screen,sizeof(saved));Renderer_Init();Renderer_Draw(&g);
         assert(memcmp(saved,screen,sizeof(saved))==0);
-        g.state=GAME_RESULT;g.scene++;g.map_score=Game_Score(map,30000,0,0);
+        g.state=GAME_RESULT;g.scene++;g.active_ms=30000;g.map_score=Game_Score(map,30000,0,0);
         preview_total+=g.map_score;g.score=preview_total;
         Renderer_Draw(&g);snprintf(name,sizeof(name),"resultado%02u",map->id);save(argv[1],name);
     }
-    puts("Renderer passed: ten states, three maps/results, text bounds, RGB565, dirty/full equality including goals.");
+    g.state=GAME_WON;g.scene++;Renderer_Draw(&g);save(argv[1],"concluido");
+    puts("Renderer passed: eleven states, nine maps/results, menu/countdown/pause/time warning, text bounds, wall geometry, dirty/full equality.");
     return 0;
 }

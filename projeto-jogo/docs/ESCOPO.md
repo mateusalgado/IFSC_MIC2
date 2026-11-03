@@ -37,23 +37,26 @@ em [CAMPANHA.md](CAMPANHA.md). A aprovação do professor permanece sem registro
 - [ ] Aprovação da ideia pelo professor.
 - [ ] Valores medidos de calibração, identificação do MCU e ensaio prolongado.
 - [x] Primeiro mapa, FSM, três tarefas e comunicação implementados; ensaio físico pendente.
-- [x] Vidas, tempo, pontuação, pausa, derrota e reinício implementados/testados no computador para a campanha de três fases.
-- [x] Mapas M01, M04 e M07, três dificuldades, avanço e vitória final implementados/testados no computador.
+- [x] Vidas, tempo, pontuação, pausa, derrota e reinício implementados/testados no computador para a campanha de nove mapas.
+- [x] Mapas M01 a M09, três por dificuldade, avanço e vitória final implementados/testados no computador.
 - [ ] Validação física das três dificuldades e ajuste de jogabilidade.
-- [ ] Seis mapas restantes para completar os nove planejados.
+- [x] Nove geometrias distintas, percursos e progressão validados no computador.
+- [x] Menu de instruções, progresso por fase, cores por dificuldade e contornos das paredes implementados.
+- [ ] Contraste, seleção dos menus e resposta visual conferidos no display físico.
 - [ ] Buzzer escolhido, circuito dimensionado e áudio funcionando.
 - [ ] Arte final, testes, medições e relatório concluídos.
 
-O firmware padrão desta revisão é a campanha de três fases; o diagnóstico é
+O firmware padrão desta revisão é a campanha de nove mapas; o diagnóstico é
 uma opção de build. Ver [CAMPANHA.md](CAMPANHA.md). O hardware
 segue com tela, joystick e som, sem motor. A ideia do elevador permanece em MAQ.
 
 ## Próxima entrega concreta
 
-Gravar 3 FASES v0.2 e registrar centro, orientação, parada, colisões, pausa,
-vidas, resultados e passagem fácil → médio → difícil. Ajustar a jogabilidade
-antes de completar os seis mapas restantes. A reconciliação/regeneração do `.ioc`, medições de RTOS,
-áudio e demais mapas permanecem pendentes. A sequência M0–M6 está no plano.
+Gravar 9 MAPAS v0.3 e percorrer M01 → M09, conferindo principalmente M03 → M04
+e M06 → M07, os menus e a vitória final. Registrar orientação, controle, tempos
+e dificuldade percebida para ajustar a jogabilidade. A reconciliação/regeneração
+do `.ioc`, medições de RTOS, áudio e relatório com evidências físicas permanecem
+pendentes. A sequência M0–M6 está no plano.
 
 Não marcar testes físicos, medições ou aprovação docente como realizados sem
 evidência. O relato funcional do aluno e os resultados medidos têm registros separados.

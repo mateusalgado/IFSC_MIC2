@@ -41,3 +41,13 @@ e produz máscaras/metadados constantes. Regras e interface foram ampliadas
 para resultado, avanço e vitória final, com testes da campanha. As prévias
 em `docs/assets/campanha-renderizada.png` vêm do renderizador do projeto
 executado com display simulado. Não são evidência de ensaio na placa.
+
+## Campanha 9 MAPAS v0.3 (03/11/2026)
+
+Adicionados mapas próprios 02, 03, 05, 06, 08 e 09. As máscaras de 01, 04 e 07
+foram preservadas; a campanha agora usa todos os nove em ordem. O menu ganhou
+ajuda interativa; a interface usa contornos de parede, seleção destacada, relógio,
+cores por dificuldade e progresso. Tudo é desenhado com as fontes/primitivas
+existentes, sem imagens externas, alocação por quadro ou nova tarefa RTOS.
+Testes percorrem a campanha inteira e verificam geometria, menus e restauração
+parcial do desenho. Ver [documentação atual](../docs/CAMPANHA.md). O ensaio físico desta versão permanece pendente.
