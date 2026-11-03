@@ -1,4 +1,4 @@
-"""Build Labirinto M01 or its optional hardware diagnostic; Python 3 + GNU Arm Embedded required."""
+"""Build Labirinto three-stage campaign or its optional hardware diagnostic; Python 3 + GNU Arm Embedded required."""
 import argparse
 from pathlib import Path
 import shutil
@@ -14,7 +14,7 @@ if compiler is None:
     parser.error('Compiler not found. Pass --cc with its executable path.')
 base = root / 'Game_Start2_STM32F411CE'
 kernel = base / 'Middlewares/Third_Party/FreeRTOS/Source'
-output = root / 'build' / ('diagnostico' if args.diagnostic else 'mapa01')
+output = root / 'build' / ('diagnostico' if args.diagnostic else 'campanha')
 output.mkdir(parents=True, exist_ok=True)
 folders = [base/'Core/Src', base/'Drivers/STM32F4xx_HAL_Driver/Src',
            kernel, kernel/'CMSIS_RTOS_V2']
@@ -35,10 +35,10 @@ for number, source in enumerate(sources):
     obj = output / f'{number:03d}_{source.stem}.o'
     subprocess.run([compiler, *options, '-c', str(source), '-o', str(obj)], check=True)
     objects.append(str(obj))
-elf = output / ('diagnostico-spi1.elf' if args.diagnostic else 'labirinto-mapa01.elf')
+elf = output / ('diagnostico-spi1.elf' if args.diagnostic else 'labirinto-campanha.elf')
 subprocess.run([compiler, *target, *objects, f'-T{base / "STM32F411CEUX_FLASH.ld"}',
                 '--specs=nano.specs', '--specs=nosys.specs', '-Wl,--gc-sections',
-                f'-Wl,-Map={output / "base-professor.map"}', '-Wl,--start-group', '-lc', '-lm',
+                f'-Wl,-Map={output / "firmware.map"}', '-Wl,--start-group', '-lc', '-lm',
                 '-Wl,--end-group', '-o', str(elf)], check=True)
 subprocess.run([compiler.replace('gcc', 'size'), str(elf)], check=True)
 print(f'Linked {len(objects)} objects: {elf}')

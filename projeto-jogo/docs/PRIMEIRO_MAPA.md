@@ -1,5 +1,9 @@
 # Primeiro mapa jogável — M01 v0.1
 
+> **Registro histórico de M01 v0.1 (commit `5b7685a`).** A versão padrão atual
+> é a campanha **3 FASES v0.2**. Para compilar, gravar e testar agora, consulte
+> [CAMPANHA.md](CAMPANHA.md); nomes de binários e resultados abaixo são da versão anterior.
+
 Implementado em 27/10/2026. Esta é a versão para testar **um mapa fácil** na
 placa, com a mesma pinagem do diagnóstico já validado pelo aluno. Não é a
 campanha de nove mapas. O código foi compilado e testado no computador;

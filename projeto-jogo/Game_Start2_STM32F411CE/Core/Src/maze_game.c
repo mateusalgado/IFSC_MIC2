@@ -21,7 +21,17 @@ void Game_Init(Game *g)
 
 static void spawn(Game *g)
 {
-    g->x_milli = MAZE_SPAWN_X * 1000; g->y_milli = MAZE_SPAWN_Y * 1000;
+    const MazeMap *map = Maze_Get(g->map_index);
+    g->x_milli = map->spawn_x * 1000; g->y_milli = map->spawn_y * 1000;
+}
+
+static void prepare_map(Game *g)
+{
+    g->remaining_ms = Maze_Get(g->map_index)->limit_ms;
+    g->active_ms = 0; g->collisions = 0; g->timeouts = 0; g->map_score = 0;
+    g->reason = GAME_NO_ERROR; g->pause_choice = 0; g->menu_latched = false;
+    g->countdown_ms = 3000;
+    spawn(g); state(g, GAME_READY);
 }
 
 static void start(Game *g)
@@ -29,8 +39,8 @@ static void start(Game *g)
     uint32_t scene = g->scene;
     memset(g, 0, sizeof(*g));
     g->scene = scene;
-    g->lives = 3; g->remaining_ms = GAME_LIMIT_MS; g->countdown_ms = 3000;
-    spawn(g); state(g, GAME_READY);
+    g->lives = 3;
+    prepare_map(g);
 }
 
 void Game_Fail(Game *g, GameReason reason)
@@ -38,13 +48,14 @@ void Game_Fail(Game *g, GameReason reason)
     if (g->state != GAME_FAULT) { g->reason = reason; state(g, GAME_FAULT); }
 }
 
-uint32_t Game_Score(uint32_t active_ms, unsigned collisions, unsigned timeouts)
+uint32_t Game_Score(const MazeMap *map, uint32_t active_ms, unsigned collisions, unsigned timeouts)
 {
     uint32_t seconds = active_ms / 1000U + (active_ms % 1000U != 0U);
-    int64_t result = 500 + 5 * (int64_t)(seconds < 60 ? 60 - seconds : 0);
+    uint32_t limit = map->limit_ms / 1000U;
+    int64_t result = 500 + 5 * (int64_t)(seconds < limit ? limit - seconds : 0);
     if (collisions == 0 && timeouts == 0) result += 200;
     result -= 100 * (int64_t)collisions + 200 * (int64_t)timeouts;
-    return result > 0 ? (uint32_t)result : 0;
+    return result > 0 ? (uint32_t)(result * map->difficulty) : 0;
 }
 
 static void hit(Game *g, GameReason reason)
@@ -84,7 +95,14 @@ void Game_Tick(Game *g, const GameInput *in, uint32_t dt)
     case GAME_TITLE:
     case GAME_WON:
     case GAME_OVER:
-        if (in->click && in->calibrated) start(g);
+        if (in->click && in->calibrated && in->render_ready) start(g);
+        break;
+    case GAME_RESULT:
+        /* One acknowledged result consumes one click; no input leaks into play. */
+        if (in->click && in->render_ready) {
+            if (g->map_index + 1U < MAZE_COUNT) { ++g->map_index; prepare_map(g); }
+            else state(g, GAME_WON);
+        }
         break;
     case GAME_READY:
         if (!in->render_ready) break;
@@ -108,13 +126,14 @@ void Game_Tick(Game *g, const GameInput *in, uint32_t dt)
         }
         int32_t nx = g->x_milli + x * GAME_SPEED_PX_S * (int32_t)dt / 1000;
         int32_t ny = g->y_milli + y * GAME_SPEED_PX_S * (int32_t)dt / 1000;
-        if (!Maze_SweepFree(Game_X(g), Game_Y(g), pixel(nx), pixel(ny))) {
+        if (!Maze_SweepFree(Maze_Get(g->map_index), Game_X(g), Game_Y(g), pixel(nx), pixel(ny))) {
             hit(g, GAME_WALL); break;
         }
         g->x_milli = nx; g->y_milli = ny;
-        if (Maze_Exit(Game_X(g), Game_Y(g))) {
-            g->score = Game_Score(g->active_ms, g->collisions, g->timeouts);
-            state(g, GAME_WON);
+        if (Maze_Exit(Maze_Get(g->map_index), Game_X(g), Game_Y(g))) {
+            g->map_score = Game_Score(Maze_Get(g->map_index), g->active_ms, g->collisions, g->timeouts);
+            g->score += g->map_score;
+            state(g, GAME_RESULT);
         }
         break;
     }
@@ -130,7 +149,7 @@ void Game_Tick(Game *g, const GameInput *in, uint32_t dt)
         break;
     case GAME_HIT:
         if (g->state_ms >= 600) {
-            if (g->reason == GAME_TIMEOUT) g->remaining_ms = GAME_LIMIT_MS;
+            if (g->reason == GAME_TIMEOUT) g->remaining_ms = Maze_Get(g->map_index)->limit_ms;
             spawn(g); g->countdown_ms = 0; state(g, GAME_READY);
         }
         break;

@@ -79,7 +79,7 @@ Ver [TESTE_BANCADA.md](TESTE_BANCADA.md) para gravação e aceitação física.
 
 ## Primeiro mapa (M01 v0.1)
 
-O código padrão atual usa três tarefas e um único dono do display, com filas de
+Desde M01 v0.1, o código usa três tarefas e um único dono do display, com filas de
 amostra, entrada, cliques, snapshots e confirmação de cena. ADC/DMA passou para
 64 meias-palavras com média de 16 pares por metade. O ST7735 agora limita a
 espera SPI, expõe erro, valida bordas e preenche retângulos com buffer fixo,
@@ -87,3 +87,12 @@ sem malloc por desenho. A lógica e a interface possuem testes no computador.
 O clock real HSI/PLL de 96 MHz foi mantido; a reconciliação/regeneração do `.ioc`
 continua pendente. O plano completo de nove mapas ainda está em execução.
 Veja [PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md).
+
+## Campanha (3 FASES v0.2, 03/11/2026)
+
+Os mapas passaram a um catálogo com máscara, dificuldade, tempo, nome, entrada
+e saída. Foram adicionados os mapas 04 e 07, resultado intermediário, pontos
+acumulados, vidas compartilhadas e vitória final. O renderizador recebe o índice
+do mapa pelo snapshot; não há mapa global mutável nem novos acessos concorrentes
+ao SPI. A pinagem, as três tarefas, as prioridades e o clock foram preservados.
+Ver [CAMPANHA.md](CAMPANHA.md) para testes, memória e ensaio físico pendente.

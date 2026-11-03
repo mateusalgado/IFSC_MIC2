@@ -6,11 +6,20 @@
 #define MAZE_WIDTH 160
 #define MAZE_HEIGHT 112
 #define MAZE_BYTES (MAZE_WIDTH * MAZE_HEIGHT / 8)
-#define MAZE_SPAWN_X 12
-#define MAZE_SPAWN_Y 16
-extern const uint8_t maze_map01[MAZE_BYTES];
-bool Maze_Wall(int x, int y);
-bool Maze_Free(int center_x, int center_y);
-bool Maze_SweepFree(int x0, int y0, int x1, int y1);
-bool Maze_Exit(int center_x, int center_y);
+#define MAZE_COUNT 3U
+typedef struct {
+    const uint8_t *walls;
+    const char *name;
+    uint32_t limit_ms;
+    uint8_t id, difficulty, corridor_width;
+    uint8_t spawn_x, spawn_y, goal_x, goal_y;
+} MazeMap;
+extern const MazeMap maze_maps[MAZE_COUNT];
+/* Index is the campaign position (0..2), not the planned map id (1,4,7). */
+const MazeMap *Maze_Get(unsigned index);
+const char *Maze_Difficulty(const MazeMap *map);
+bool Maze_Wall(const MazeMap *map, int x, int y);
+bool Maze_Free(const MazeMap *map, int center_x, int center_y);
+bool Maze_SweepFree(const MazeMap *map, int x0, int y0, int x1, int y1);
+bool Maze_Exit(const MazeMap *map, int center_x, int center_y);
 #endif

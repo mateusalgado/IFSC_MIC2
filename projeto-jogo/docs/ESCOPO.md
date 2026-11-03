@@ -1,6 +1,6 @@
 # Escopo — Labirinto de Precisão
 
-Atualizado em 27/10/2026. O usuário escolheu um jogo com diferentes plantas de
+Atualizado em 03/11/2026. O usuário escolheu um jogo com diferentes plantas de
 labirinto, conduzindo um ponto pelo caminho sem tocar nas paredes. Também
 confirmou que deseja uma interface bonita e interativa, não inteligência artificial.
 
@@ -23,8 +23,8 @@ o controle mantém resposta previsível. O nome Labirinto de Precisão é provis
 
 As regras exatas, parâmetros iniciais, arquitetura e critérios de teste estão em
 [PLANO_LABIRINTO.md](PLANO_LABIRINTO.md). Telas, inventário de arte e fontes estão
-em [PLANO_VISUAL.md](PLANO_VISUAL.md). Esses documentos são a proposta v1; ainda
-não representam jogo implementado ou aprovação do professor.
+em [PLANO_VISUAL.md](PLANO_VISUAL.md). Esses documentos descrevem o plano completo; o subconjunto implementado está
+em [CAMPANHA.md](CAMPANHA.md). A aprovação do professor permanece sem registro.
 
 ## Estado atual
 
@@ -37,20 +37,22 @@ não representam jogo implementado ou aprovação do professor.
 - [ ] Aprovação da ideia pelo professor.
 - [ ] Valores medidos de calibração, identificação do MCU e ensaio prolongado.
 - [x] Primeiro mapa, FSM, três tarefas e comunicação implementados; ensaio físico pendente.
-- [x] Vidas, tempo, pontuação, pausa, derrota e reinício implementados/testados no computador para o mapa 01.
-- [ ] Três dificuldades jogáveis e nove mapas validados.
+- [x] Vidas, tempo, pontuação, pausa, derrota e reinício implementados/testados no computador para a campanha de três fases.
+- [x] Mapas M01, M04 e M07, três dificuldades, avanço e vitória final implementados/testados no computador.
+- [ ] Validação física das três dificuldades e ajuste de jogabilidade.
+- [ ] Seis mapas restantes para completar os nove planejados.
 - [ ] Buzzer escolhido, circuito dimensionado e áudio funcionando.
 - [ ] Arte final, testes, medições e relatório concluídos.
 
-O firmware padrão desta revisão é o mapa 01; o diagnóstico é uma opção de build.
-Ver [PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md). O hardware
+O firmware padrão desta revisão é a campanha de três fases; o diagnóstico é
+uma opção de build. Ver [CAMPANHA.md](CAMPANHA.md). O hardware
 segue com tela, joystick e som, sem motor. A ideia do elevador permanece em MAQ.
 
 ## Próxima entrega concreta
 
-Gravar M01 v0.1 e registrar o comportamento real: centro, orientação, parada,
-colisões, pausa, vidas e saída. Ajustar a jogabilidade e depois expandir para
-três dificuldades. A reconciliação/regeneração do `.ioc`, medições de RTOS,
+Gravar 3 FASES v0.2 e registrar centro, orientação, parada, colisões, pausa,
+vidas, resultados e passagem fácil → médio → difícil. Ajustar a jogabilidade
+antes de completar os seis mapas restantes. A reconciliação/regeneração do `.ioc`, medições de RTOS,
 áudio e demais mapas permanecem pendentes. A sequência M0–M6 está no plano.
 
 Não marcar testes físicos, medições ou aprovação docente como realizados sem

@@ -12,12 +12,15 @@ de duração e calibração numérica continuam pendentes. O marco atual do jogo
 
 ## Atualização de implementação
 
-M01 v0.1 implementa um mapa fácil com três tarefas, regras básicas, pausa,
-colisão, pontuação, resultado e reinício. Os testes no computador e builds
-passaram; ensaio físico desta versão, áudio, oito mapas e outras dificuldades
-continuam pendentes. A calibração usa zona morta sem a histerese adicional
-proposta abaixo. A regeneração do `.ioc` ainda não foi validada. Consulte
-[PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md) para o estado efetivo e instruções.
+**03/11/2026 — 3 FASES v0.2:** implementados os mapas M01 (fácil), M04
+(médio) e M07 (difícil), resultado por fase, avanço, vidas compartilhadas,
+pontos acumulados e vitória final. O catálogo é constante na Flash, compartilhado
+pelo desenho e pela colisão. Testes no computador percorrem a campanha inteira.
+Ensaio físico, áudio, seis mapas restantes e acabamento continuam pendentes.
+A calibração usa zona morta sem a histerese adicional proposta abaixo; a
+regeneração do `.ioc` ainda não foi validada. Consulte [CAMPANHA.md](CAMPANHA.md)
+para instruções e limites. As seções seguintes preservam o plano da entrega
+completa de nove mapas; seus nomes/quantidades são metas, não estado concluído.
 
 ## 1. Experiência do jogador
 

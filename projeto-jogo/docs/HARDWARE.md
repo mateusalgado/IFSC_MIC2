@@ -92,6 +92,6 @@ Faltam seleção e circuito do buzzer, identificação legível do MCU e mediç�
 de calibração/estabilidade. O teste funcional do diagnóstico foi relatado como
 bem-sucedido pelo aluno em 27/10/2026.
 PA8/A8 permanece reservado, sem ligação de buzzer nesta etapa. O firmware padrão
-é o [primeiro mapa jogável](PRIMEIRO_MAPA.md); o diagnóstico de
+é o [jogo de três fases](CAMPANHA.md); o diagnóstico de
 [TESTE_BANCADA.md](TESTE_BANCADA.md) continua opcional. A pinagem SPI1, ADC e botão
 do professor foi mantida.

@@ -7,6 +7,14 @@ executadas no STM32. A [prévia abaixo](assets/proposta-visual.png) é desenhada
 
 ![Proposta das nove telas, ainda não implementadas no firmware](assets/proposta-visual.png)
 
+## Interface implementada em 03/11/2026
+
+A versão **3 FASES v0.2** já desenha preparação com nome/dificuldade/tempo,
+os três mapas, resultado com pontos da fase e total, vidas restantes, avanço
+e vitória final. A [prévia da campanha](assets/campanha-renderizada.png) usa
+quadros do renderizador C em painel simulado, com valores de teste; não é foto
+da placa. Mascote e animações adicionais deste plano continuam pendentes.
+
 ## O que já existe e o que podemos reaproveitar
 
 - `Core/Inc/fonts.h` e `Core/Src/fonts.c`: fontes bitmap **7×10, 11×18 e 16×26**.

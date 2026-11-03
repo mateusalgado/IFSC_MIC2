@@ -46,19 +46,36 @@ int main(int argc,char **argv)
 {
     assert(argc==2);
     Game g;Game_Init(&g);g.lives=3;g.remaining_ms=60000;g.x_milli=12000;g.y_milli=16000;
-    const char *names[]={"calibracao","inicio","preparar","mapa01","pausa","impacto","concluido","derrota","falha"};
+    const char *names[]={"calibracao","inicio","preparar","mapa01","pausa","impacto","resultado","concluido","derrota","falha"};
     for (int state=GAME_CALIBRATING;state<=GAME_FAULT;++state) {
         g.state=(GameState)state;g.scene++;g.reason=GAME_WALL;
         g.lives=state==GAME_OVER?0:state==GAME_HIT?2:3;
         g.score=state==GAME_WON?850:0;
         Renderer_Draw(&g);save(argv[1],names[state]);
     }
-    g.state=GAME_PLAYING;g.scene++;g.x_milli=12000;g.y_milli=16000;
-    Renderer_Draw(&g);
-    for (int x=13;x<=48;++x) { g.x_milli=x*1000;Renderer_Draw(&g); }
-    memcpy(saved,screen,sizeof(saved));
-    Renderer_Init();Renderer_Draw(&g);
-    assert(memcmp(saved,screen,sizeof(saved))==0); /* dirty regions restore exact map */
-    puts("Renderer passed: nine states, text bounds, RGB565 and dirty/full frame equality.");
+    uint32_t preview_total=0;
+    for (unsigned stage=0;stage<MAZE_COUNT;++stage) {
+        const MazeMap *map=Maze_Get(stage);
+        char name[32];
+        g.map_index=(uint8_t)stage;g.remaining_ms=map->limit_ms;g.lives=3;g.score=preview_total;
+        g.x_milli=map->spawn_x*1000;g.y_milli=map->spawn_y*1000;
+        g.state=GAME_READY;g.scene++;
+        Renderer_Draw(&g);snprintf(name,sizeof(name),"preparar%02u",map->id);save(argv[1],name);
+        g.state=GAME_PLAYING;g.scene++;
+        Renderer_Draw(&g);snprintf(name,sizeof(name),"mapa%02u",map->id);save(argv[1],name);
+        for (int x=13;x<=48;++x) { g.x_milli=x*1000;Renderer_Draw(&g); }
+        memcpy(saved,screen,sizeof(saved));
+        Renderer_Init();Renderer_Draw(&g);
+        assert(memcmp(saved,screen,sizeof(saved))==0); /* dirty regions restore exact map */
+        /* Draw over the goal and move away, ensuring its diamond is restored. */
+        g.x_milli=map->goal_x*1000;g.y_milli=map->goal_y*1000;g.scene++;
+        Renderer_Draw(&g);g.x_milli-=3000;Renderer_Draw(&g);
+        memcpy(saved,screen,sizeof(saved));Renderer_Init();Renderer_Draw(&g);
+        assert(memcmp(saved,screen,sizeof(saved))==0);
+        g.state=GAME_RESULT;g.scene++;g.map_score=Game_Score(map,30000,0,0);
+        preview_total+=g.map_score;g.score=preview_total;
+        Renderer_Draw(&g);snprintf(name,sizeof(name),"resultado%02u",map->id);save(argv[1],name);
+    }
+    puts("Renderer passed: ten states, three maps/results, text bounds, RGB565, dirty/full equality including goals.");
     return 0;
 }

@@ -5,15 +5,18 @@
 Hardware escolhido: tela, joystick e sons, sem motor. Ideia definida pelo aluno:
 conduzir um ponto por diferentes mapas de labirinto sem tocar nas paredes.
 O diagnóstico foi gravado e relatado como funcionando pelo aluno. A versão atual
-é **M01 v0.1: primeiro mapa jogável**, com três vidas, tempo, pausa, colisão,
-pontuação e reinício. Esta nova versão aguarda teste na placa pelo aluno.
+é **3 FASES v0.2**, com mapas fácil, médio e difícil, três vidas compartilhadas,
+tempo, pausa, colisão, pontuação acumulada e vitória final. Esta versão aguarda
+teste na placa pelo aluno.
 
 ## Testar agora
 
-Siga [PRIMEIRO_MAPA.md](docs/PRIMEIRO_MAPA.md) para atualizar o clone, compilar,
+Siga [CAMPANHA.md](docs/CAMPANHA.md) para atualizar o clone, compilar,
 gravar e testar. O build padrão executa o jogo; o diagnóstico continua disponível
 com `APP_DIAGNOSTIC=1` ou `--diagnostic` no script. A tela inicial identifica
-**LABIRINTO / M01 v0.1**. Ainda não há áudio nem a campanha de nove mapas.
+**LABIRINTO / 3 FASES v0.2**. A sequência atual é M01 → M04 → M07, um mapa
+por dificuldade. Há resultado de cada fase, avanço por clique e vitória após
+a terceira fase. Ainda não há áudio nem os seis mapas restantes do plano.
 
 ## Plano para implementação
 
@@ -28,7 +31,7 @@ Regras e parâmetros abaixo constituem a proposta v1 para implementação e test
 
 ## Conteúdo
 
-- `Game_Start2_STM32F411CE/`: base do professor adaptada para o primeiro mapa e diagnóstico opcional.
+- `Game_Start2_STM32F411CE/`: base do professor adaptada para três fases e diagnóstico opcional.
 - `referencias/Projeto_uC_II_2026_02.pdf`: enunciado original.
 - [Escopo](docs/ESCOPO.md): requisitos, decisões e situação das entregas.
 - [Base do professor](docs/BASE_PROFESSOR.md): recursos existentes e pontos de revisão.
@@ -68,11 +71,11 @@ No Windows, se o compilador não estiver no PATH:
 python scripts/build_base.py --cc 'C:\caminho\tools\bin\arm-none-eabi-gcc.exe'
 ```
 
-O resultado padrão vai para `build/mapa01/labirinto-mapa01.elf`, `.hex` e `.bin`.
+O resultado padrão vai para `build/campanha/labirinto-campanha.elf`, `.hex` e `.bin`.
 Use `--diagnostic` para gerar `build/diagnostico/diagnostico-spi1.*`. O script
 não grava o MCU. O GitHub Actions disponibiliza os artefatos
-`mic2-labirinto-mapa01` e `mic2-diagnostico-spi1`. Binários antigos
-`base-professor.*` não são a versão atual.
+`mic2-labirinto-campanha` e `mic2-diagnostico-spi1`. Binários antigos
+`base-professor.*` e `labirinto-mapa01.*` não são a versão atual.
 
 ## Testes no computador
 
@@ -83,5 +86,5 @@ python3 scripts/generate_map.py --check
 python3 scripts/test_host.py --sanitize
 ```
 
-Os testes cobrem regras, percurso completo, entrada, desenho e o driver ST7735
+Os testes cobrem regras, campanha completa, transições, entrada, desenho e o driver ST7735
 com periférico simulado. Não substituem o teste físico da nova versão.

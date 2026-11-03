@@ -1,5 +1,8 @@
 {
+  "id": 1,
   "name": "PRIMEIRA PASSAGEM",
+  "difficulty": 1,
+  "limit_ms": 60000,
   "width": 160,
   "height": 112,
   "corridor_width": 14,

@@ -1,4 +1,4 @@
-name: Jogo - mapa 01 e testes
+name: Jogo - tres fases e testes
 on:
   push:
     paths:
@@ -28,18 +28,18 @@ jobs:
       - uses: actions/checkout@v4
       - name: Instalar compilador ARM
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends gcc-arm-none-eabi libnewlib-arm-none-eabi
-      - name: Compilar o mapa 01
+      - name: Compilar a campanha de tres fases
         run: python3 projeto-jogo/scripts/build_base.py
       - name: Compilar o diagnostico opcional
         run: python3 projeto-jogo/scripts/build_base.py --diagnostic
       - name: Disponibilizar firmware para teste
         uses: actions/upload-artifact@v4
         with:
-          name: mic2-labirinto-mapa01
+          name: mic2-labirinto-campanha
           path: |
-            projeto-jogo/build/mapa01/labirinto-mapa01.elf
-            projeto-jogo/build/mapa01/labirinto-mapa01.hex
-            projeto-jogo/build/mapa01/labirinto-mapa01.bin
+            projeto-jogo/build/campanha/labirinto-campanha.elf
+            projeto-jogo/build/campanha/labirinto-campanha.hex
+            projeto-jogo/build/campanha/labirinto-campanha.bin
           if-no-files-found: error
       - name: Disponibilizar diagnostico opcional
         uses: actions/upload-artifact@v4
