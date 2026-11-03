@@ -17,6 +17,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+      - name: Conferir contrato CubeMX e fontes
+        run: python3 projeto-jogo/scripts/check_config.py
       - name: Conferir geometria gerada
         run: python3 projeto-jogo/scripts/generate_map.py --check
       - name: Testar regras, renderizador e driver com sanitizadores

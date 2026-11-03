@@ -118,10 +118,3 @@ void App_Start(void)
         xTaskCreate(GameTask, "jogo", 512, NULL, 3, NULL) != pdPASS ||
         xTaskCreate(RenderTask, "display", 512, NULL, 1, NULL) != pdPASS) Error_Handler();
 }
-
-void vApplicationMallocFailedHook(void) { Error_Handler(); }
-void vApplicationStackOverflowHook(TaskHandle_t task, char *name)
-{
-    (void)task; (void)name;
-    Error_Handler();
-}

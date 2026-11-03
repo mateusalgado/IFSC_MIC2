@@ -36,12 +36,15 @@ em [CAMPANHA.md](CAMPANHA.md). A aprovação do professor permanece sem registro
 - [x] Conceito do jogo escolhido e plano v1 de regras/RTOS/interface elaborado.
 - [ ] Aprovação da ideia pelo professor.
 - [ ] Valores medidos de calibração, identificação do MCU e ensaio prolongado.
-- [x] Primeiro mapa, FSM, três tarefas e comunicação implementados; ensaio físico pendente.
+- [x] Primeiro mapa, FSM, três tarefas e comunicação implementados.
 - [x] Vidas, tempo, pontuação, pausa, derrota e reinício implementados/testados no computador para a campanha de nove mapas.
 - [x] Mapas M01 a M09, três por dificuldade, avanço e vitória final implementados/testados no computador.
-- [ ] Validação física das três dificuldades e ajuste de jogabilidade.
+- [x] Nove mapas concluídos na placa, sem problemas até o momento, conforme relato do aluno em 03/11/2026.
 - [x] Nove geometrias distintas, percursos e progressão validados no computador.
-- [x] Menu de instruções, progresso por fase, cores por dificuldade e contornos das paredes implementados.
+- [x] Tutorial interativo, progresso por fase, cores por dificuldade e contornos das paredes implementados.
+- [x] Configuração `.ioc` alinhada; procedimento de regeneração verificado e documentado.
+- [x] Relatório técnico e índice de entrega preparados.
+- [ ] Tutorial v0.4 retestado na placa.
 - [ ] Contraste, seleção dos menus e resposta visual conferidos no display físico.
 - [ ] Buzzer escolhido, circuito dimensionado e áudio funcionando.
 - [ ] Arte final, testes, medições e relatório concluídos.
@@ -52,11 +55,10 @@ segue com tela, joystick e som, sem motor. A ideia do elevador permanece em MAQ.
 
 ## Próxima entrega concreta
 
-Gravar 9 MAPAS v0.3 e percorrer M01 → M09, conferindo principalmente M03 → M04
-e M06 → M07, os menus e a vitória final. Registrar orientação, controle, tempos
-e dificuldade percebida para ajustar a jogabilidade. A reconciliação/regeneração
-do `.ioc`, medições de RTOS, áudio e relatório com evidências físicas permanecem
-pendentes. A sequência M0–M6 está no plano.
+Gravar TUTORIAL v0.4, completar COMO JOGAR e retestar a campanha. Registrar
+versão, duração e observações. Fechar áudio, medições RTOS e evidências físicas
+para concluir o [relatório](RELATORIO.md). O [índice de entrega](ENTREGA.md)
+reúne material, demonstração e pendências. A sequência M0–M6 permanece no plano.
 
 Não marcar testes físicos, medições ou aprovação docente como realizados sem
 evidência. O relato funcional do aluno e os resultados medidos têm registros separados.

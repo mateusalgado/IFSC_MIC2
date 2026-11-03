@@ -8,8 +8,11 @@ Materiais, exemplos e projeto da disciplina. O trabalho foi reiniciado em
 - [Laboratório FreeRTOS no STM32F411](README-labRTOS.md): 16 exemplos de tarefas,
   prioridades, comunicação, sincronização e interrupções, com USB CDC.
 - [Jogo: Labirinto de Precisão](projeto-jogo/README.md), com nove mapas jogáveis,
-  três por dificuldade, menu de instruções, interface renovada e diagnóstico opcional.
-- [Gravar e testar a campanha v0.3](projeto-jogo/docs/CAMPANHA.md).
+  três por dificuldade, tutorial interativo e diagnóstico opcional.
+- [Gravar e testar TUTORIAL v0.4](projeto-jogo/docs/CAMPANHA.md).
+- [Relatório técnico](projeto-jogo/docs/RELATORIO.md).
+- [Entrega e apresentação](projeto-jogo/docs/ENTREGA.md).
+- [Configuração e regeneração CubeMX](projeto-jogo/docs/REGENERACAO.md).
 - [Plano do jogo e arquitetura RTOS](projeto-jogo/docs/PLANO_LABIRINTO.md).
 - [Interface, ícones e fontes](projeto-jogo/docs/PLANO_VISUAL.md).
 - [Requisitos e próximos passos](projeto-jogo/docs/ESCOPO.md).

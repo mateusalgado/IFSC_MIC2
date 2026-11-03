@@ -50,4 +50,23 @@ ajuda interativa; a interface usa contornos de parede, seleção destacada, rel�
 cores por dificuldade e progresso. Tudo é desenhado com as fontes/primitivas
 existentes, sem imagens externas, alocação por quadro ou nova tarefa RTOS.
 Testes percorrem a campanha inteira e verificam geometria, menus e restauração
-parcial do desenho. Ver [documentação atual](../docs/CAMPANHA.md). O ensaio físico desta versão permanece pendente.
+parcial do desenho. O aluno posteriormente confirmou a conclusão dos nove mapas
+na placa, sem problemas até o momento. Ver [documentação atual](../docs/CAMPANHA.md).
+
+## Tutorial v0.4 e documentação (03/11/2026)
+
+Arena e etapas interativas próprias adicionadas ao menu COMO JOGAR, usando as
+fontes, primitivas, movimento e colisão existentes. Não foram incorporadas novas
+imagens externas ou bibliotecas. A prévia do tutorial vem de testes do renderizador.
+O `.ioc` e as regiões USER CODE foram reconciliados; a regeneração foi ensaiada
+em uma cópia com CubeMX 6.18 e pacote oficial F4 v1.28.3. As bibliotecas originais
+do projeto principal foram preservadas. Procedimento e compatibilidade:
+[REGENERACAO.md](../docs/REGENERACAO.md).
+
+O README segue a organização de apresentação, conexões, imagens e estrutura do
+[exemplo OLED de MIC1](https://github.com/mateusalgado/IFSC_MICROCONTROLADORESI/blob/master/apps/oled/README.md),
+consultado em 03/11/2026. O texto técnico descreve esta implementação STM32;
+não foram transplantados os parâmetros ou periféricos MSP430.
+Foram preparados [relatório](../docs/RELATORIO.md) e [índice de entrega](../docs/ENTREGA.md).
+A imagem `docs/assets/componentes-aluno.png` é a fotografia enviada pelo aluno
+na conversa, copiada sem edição; não representa ensaio de firmware nem montagem final.

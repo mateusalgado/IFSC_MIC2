@@ -78,13 +78,78 @@ static unsigned root(unsigned value)
     return result;
 }
 
+static void destination(const Game *g, const GameInput *in, uint32_t dt, int32_t *nx, int32_t *ny)
+{
+    int32_t x = in->x, y = in->y;
+    unsigned norm2 = (unsigned)(x*x + y*y);
+    if (norm2 > 1000000U) {
+        unsigned length = root(norm2) + 1U;
+        x = x * 1000 / (int32_t)length; y = y * 1000 / (int32_t)length;
+    }
+    *nx = g->x_milli + x * GAME_SPEED_PX_S * (int32_t)dt / 1000;
+    *ny = g->y_milli + y * GAME_SPEED_PX_S * (int32_t)dt / 1000;
+}
+
+static void tutorial_step(Game *g, TutorialStep step)
+{
+    g->tutorial_step = step;
+    state(g, GAME_HELP);
+}
+static void tutorial_spawn(Game *g)
+{
+    g->x_milli = maze_tutorial.spawn_x * 1000;
+    g->y_milli = maze_tutorial.spawn_y * 1000;
+}
+static void tutorial(Game *g, const GameInput *in, uint32_t dt)
+{
+    if (!in->render_ready) return;
+    if (in->click) {
+        if (g->tutorial_step == TUTORIAL_PAUSE) tutorial_step(g, TUTORIAL_RESUME);
+        else if (g->tutorial_step == TUTORIAL_RESUME) tutorial_step(g, TUTORIAL_DONE);
+        else { g->title_choice = 0; g->menu_latched = true; state(g, GAME_TITLE); }
+        return;
+    }
+    if (g->tutorial_step >= TUTORIAL_PAUSE) return;
+    if (g->tutorial_step == TUTORIAL_IMPACT) {
+        if (g->state_ms >= 700) { tutorial_spawn(g); tutorial_step(g, TUTORIAL_EXIT); }
+        return;
+    }
+    if (g->tutorial_wait_ms) {
+        if (dt >= g->tutorial_wait_ms) {
+            g->tutorial_wait_ms = 0; state(g, GAME_HELP);
+        } else g->tutorial_wait_ms -= dt;
+        return;
+    }
+    if (g->neutral_ms < 200) {
+        if (in->x || in->y) g->neutral_ms = 0;
+        else g->neutral_ms += dt;
+        return;
+    }
+    if (g->tutorial_step == TUTORIAL_CENTER) {
+        tutorial_step(g, TUTORIAL_MOVE); return;
+    }
+    int32_t nx, ny; destination(g, in, dt, &nx, &ny);
+    if (!Maze_SweepFree(&maze_tutorial, Game_X(g), Game_Y(g), pixel(nx), pixel(ny))) {
+        if (g->tutorial_step == TUTORIAL_WALL) tutorial_step(g, TUTORIAL_IMPACT);
+        else {
+            tutorial_spawn(g); g->tutorial_wait_ms = 600; state(g, GAME_HELP);
+        }
+        return; /* Practice never touches campaign lives, points or penalties. */
+    }
+    g->x_milli = nx; g->y_milli = ny;
+    if (g->tutorial_step == TUTORIAL_MOVE && Game_X(g) >= 65 && Game_X(g) <= 71 &&
+        Game_Y(g) >= 55 && Game_Y(g) <= 61) tutorial_step(g, TUTORIAL_WALL);
+    if (g->tutorial_step == TUTORIAL_EXIT && Maze_Exit(&maze_tutorial, Game_X(g), Game_Y(g)))
+        tutorial_step(g, TUTORIAL_PAUSE);
+}
+
 void Game_Tick(Game *g, const GameInput *in, uint32_t dt)
 {
     if (g->state == GAME_FAULT) return;
     if (g->state != GAME_CALIBRATING && !in->valid) {
         Game_Fail(g, GAME_ADC_ERROR); return;
     }
-    if (g->state == GAME_PLAYING && dt > 50) {
+    if ((g->state == GAME_PLAYING || g->state == GAME_HELP) && dt > 50) {
         Game_Fail(g, GAME_TIMING_ERROR); return;
     }
     g->state_ms += dt;
@@ -99,14 +164,14 @@ void Game_Tick(Game *g, const GameInput *in, uint32_t dt)
             g->title_choice ^= 1U; g->menu_latched = true;
         }
         if (in->click && in->calibrated) {
-            if (g->title_choice) state(g, GAME_HELP);
+            if (g->title_choice) {
+                g->tutorial_wait_ms = 0; tutorial_spawn(g); tutorial_step(g, TUTORIAL_CENTER);
+            }
             else start(g);
         }
         break;
     case GAME_HELP:
-        if (in->click && in->render_ready) {
-            g->menu_latched = true; state(g, GAME_TITLE);
-        }
+        tutorial(g, in, dt);
         break;
     case GAME_WON:
     case GAME_OVER:
@@ -133,14 +198,7 @@ void Game_Tick(Game *g, const GameInput *in, uint32_t dt)
         if (dt >= g->remaining_ms) { g->remaining_ms = 0; hit(g, GAME_TIMEOUT); break; }
         g->remaining_ms -= dt;
         if (in->click) { g->pause_choice = 0; g->menu_latched = false; state(g, GAME_PAUSED); break; }
-        int32_t x = in->x, y = in->y;
-        unsigned norm2 = (unsigned)(x*x + y*y);
-        if (norm2 > 1000000U) {
-            unsigned length = root(norm2) + 1U;
-            x = x * 1000 / (int32_t)length; y = y * 1000 / (int32_t)length;
-        }
-        int32_t nx = g->x_milli + x * GAME_SPEED_PX_S * (int32_t)dt / 1000;
-        int32_t ny = g->y_milli + y * GAME_SPEED_PX_S * (int32_t)dt / 1000;
+        int32_t nx, ny; destination(g, in, dt, &nx, &ny);
         if (!Maze_SweepFree(Maze_Get(g->map_index), Game_X(g), Game_Y(g), pixel(nx), pixel(ny))) {
             hit(g, GAME_WALL); break;
         }

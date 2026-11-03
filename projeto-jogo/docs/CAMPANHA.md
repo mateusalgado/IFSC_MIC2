@@ -1,12 +1,13 @@
-# Campanha de nove mapas — v0.3
+# Campanha de nove mapas — TUTORIAL v0.4
 
 Atualizada em **03/11/2026**. O firmware padrão percorre nove mapas,
 três por dificuldade, com resultado de cada fase, avanço pelo joystick,
-pontuação acumulada e vitória final. Identificação na tela: **9 MAPAS v0.3**.
+pontuação acumulada e vitória final. Identificação na tela: **TUTORIAL v0.4**.
 
 A pinagem e a aquisição de joystick do diagnóstico validado pelo aluno foram
-preservadas. Os testes desta campanha foram executados no computador e a
-compilação ARM foi verificada; **o ensaio desta versão na placa está pendente**.
+preservadas. Em 03/11/2026, o aluno confirmou que concluiu os nove mapas da
+versão anterior ao tutorial sem problemas até o momento. A versão v0.4 passou
+nos testes do computador e na compilação ARM; **o novo tutorial aguarda teste na placa**.
 O marco anterior de um mapa está registrado em [PRIMEIRO_MAPA.md](PRIMEIRO_MAPA.md);
 a campanha intermediária de três fases está no commit `0b84598`.
 
@@ -53,8 +54,10 @@ precisam ser medidos com pessoas jogando na placa.
 - **Menu:** cima/baixo alterna JOGAR e COMO JOGAR; o botão confirma. Manter o
   eixo inclinado não repete a seleção; centralizar antes de selecionar novamente.
   A opção escolhida tem fundo destacado e uma borda que alterna a cada 500 ms.
-- **Ajuda:** instruções de movimento, colisão, saída e pausa. Botão VOLTAR retorna
-  ao menu, sem iniciar uma partida ou conceder pontos.
+- **COMO JOGAR:** tutorial jogável em arena própria. Centralize, leve o ponto
+  ao alvo, experimente uma colisão, contorne a parede e pratique pausa/retomada.
+  Não perde vidas nem concede pontos. Clique sai durante os exercícios; nas
+  etapas finais pratica a pausa e confirma o retorno ao menu.
 - **Preparação:** fase N/9, nome do mapa, dificuldade escrita, tempo e nove
   indicadores de progresso; centralização seguida de contagem 3–2–1.
 - **Durante o jogo:** paredes escuras contornadas por dentro da máscara de colisão,
@@ -129,11 +132,13 @@ Preservar mudanças locais antes de resolver qualquer conflito. No STM32CubeIDE:
 3. Manter `APP_DIAGNOSTIC=0` em `Core/Inc/game_config.h`.
 4. Conferir que Run/Debug aponta para o `.elf` recém-compilado desse projeto.
 5. Gravar com ST-Link; se parar no início da depuração, usar Resume.
-6. Deixar o joystick solto ao iniciar e conferir **9 MAPAS v0.3** no título.
+6. Deixar o joystick solto ao iniciar e conferir **TUTORIAL v0.4** no título.
 
-**Não regenerar pelo `.ioc` ainda:** a divergência HSE/HSI herdada permanece
-pendente. O código compilado preserva o HSI/PLL a 96 MHz da base testada.
-Não foi necessário mudar fios. Ver [HARDWARE.md](HARDWARE.md).
+O `.ioc` está alinhado ao HSI/PLL de 96 MHz e aos periféricos do firmware.
+Não é necessário gerar código para compilar; quando houver alteração de
+configuração, seguir [REGENERACAO.md](REGENERACAO.md), incluindo o ajuste de
+compatibilidade de hook do CubeMX 6.18. Os fios permanecem iguais.
+Ver [HARDWARE.md](HARDWARE.md).
 
 Alternativa com Python 3 e GNU Arm Embedded, a partir de `projeto-jogo`:
 
@@ -164,21 +169,22 @@ A opção `--diagnostic` continua produzindo `diagnostico-spi1.*` e o artefato
   `GAME_PLAYING`; confirmação do resultado avança uma única fase ou abre vitória.
 - Renderizador usa entrada, saída, nome e limite do catálogo. O HUD identifica
   M01 até M09; preparação e resultado mostram fase N/9.
-- Novo estado `GAME_HELP` e seleção de título; `title_choice` faz parte do
+- `GAME_HELP` contém oito etapas internas de treinamento; `title_choice` faz parte do
   snapshot. Mantidos a liberação do eixo e o evento único de clique.
 - Restauração parcial do fundo e losango da saída verificada nos nove mapas.
 
 Com Python 3 e GCC/Clang (Linux/WSL), a partir de `projeto-jogo`:
 
 ```sh
+python3 scripts/check_config.py
 python3 scripts/generate_map.py --check
 python3 scripts/test_host.py --sanitize
 ```
 
-Resultados desta revisão: **8333 verificações** da lógica/entrada/geometria,
+Resultados desta revisão: **8348 verificações** da lógica/entrada/geometria,
 percurso completo pelos nove mapas, conservação de vidas e pontos, penalidades,
 pausa, timeout por dificuldade, derrota em fase posterior, confirmação de tela,
-vitória e reinício. Também passaram testes dos onze estados visuais, limites de
+vitória, reinício e percurso do tutorial sem alterar vidas/pontos. Também passaram testes dos onze estados visuais, limites de
 texto, equivalência entre quadro completo e atualização parcial nos menus,
 contagem, pausa, alerta de tempo e mapas, além do driver SPI simulado, com ASan/UBSan.
 O teste percorre os mapas pela máquina de estados usando caminhos descobertos
@@ -190,8 +196,8 @@ A prévia pode ser reproduzida após os testes com
 
 Compilação ARM local com GCC 14.3.1, 48 objetos, `-O0 -Wall`, sem avisos:
 
-- Campanha: text 72516, data 120 e bss 24272 bytes.
-- Diagnóstico: text 32228, data 104 e bss 21616 bytes.
+- Campanha: text 76360, data 120 e bss 24272 bytes.
+- Diagnóstico: text 32292, data 104 e bss 21616 bytes.
 
 BSS inclui heap reservado do RTOS e não mede uso máximo durante o jogo. Verificar
 na placa `game_input_stack_free`, `game_logic_stack_free`, `game_render_stack_free`
@@ -199,8 +205,14 @@ na placa `game_input_stack_free`, `game_logic_stack_free`, `game_render_stack_fr
 
 ## Roteiro de bancada e registro
 
-- [ ] Identificação **9 MAPAS v0.3**, commit gravado e calibração concluída.
-- [ ] Cima/baixo seleciona JOGAR/COMO JOGAR; ajuda abre e retorna corretamente.
+A conclusão dos nove mapas da versão anterior foi confirmada pelo aluno,
+sem problemas relatados. Os itens abaixo orientam o reteste específico de v0.4;
+não representam falhas observadas.
+
+- [ ] Identificação **TUTORIAL v0.4**, commit gravado e calibração concluída.
+- [ ] Cima/baixo seleciona JOGAR/COMO JOGAR; tutorial abre e retorna corretamente.
+- [ ] Tutorial: centralizar, alvo, colisão, desvio, pausa, retomada e conclusão.
+- [ ] Erro no treino permite repetir; sair/reentrar e iniciar campanha funciona.
 - [ ] Orientação correta e parada imediata ao soltar o joystick.
 - [ ] M01, M02 e M03 acessíveis em sequência, com 60 s cada.
 - [ ] M03 → M04 muda para médio/50 s; M04, M05 e M06 acessíveis.
@@ -216,8 +228,7 @@ na placa `game_input_stack_free`, `game_logic_stack_free`, `game_render_stack_fr
 - [ ] Registrar fotos/vídeo, tempos de conclusão e dificuldade de cada mapa.
 - [ ] Sessão contínua de 30 minutos e medições de pilha/heap/atrasos.
 
-**Pendências:** ensaio físico e ajuste de dificuldade/contraste, áudio
-(buzzer/circuito ainda não escolhidos), reconciliação do `.ioc`, aprovação da
-ideia e relatório final com resultados medidos. Mascote e animações adicionais
-são opcionais. Não considerar o trabalho da disciplina concluído sem som e
-validação da montagem.
+**Pendências:** reteste físico do tutorial/regeneração, áudio (buzzer/circuito
+ainda não escolhidos), aprovação da ideia e medições para fechar o
+[relatório](RELATORIO.md). O [roteiro de entrega](ENTREGA.md) reúne os documentos
+e evidências necessárias. Mascote e animações adicionais são opcionais.

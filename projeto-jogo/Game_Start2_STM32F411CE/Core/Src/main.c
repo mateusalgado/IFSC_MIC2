@@ -122,7 +122,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  /* Default build: Labirinto M01. APP_DIAGNOSTIC selects the bench screen. */
+  /* Default build: Labirinto campaign. APP_DIAGNOSTIC selects the bench screen. */
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -151,9 +151,10 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Init scheduler */
-  if (osKernelInitialize() != osOK) Error_Handler();
+  osKernelInitialize();
 
   /* USER CODE BEGIN RTOS_MUTEX */
+  if (osKernelGetState() != osKernelReady) Error_Handler();
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 

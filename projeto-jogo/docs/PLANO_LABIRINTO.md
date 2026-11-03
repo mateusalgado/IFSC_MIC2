@@ -12,14 +12,16 @@ de duração e calibração numérica continuam pendentes. O marco atual do jogo
 
 ## Atualização de implementação
 
-**03/11/2026 — 9 MAPAS v0.3:** os nove mapas estão implementados em sequência,
+**03/11/2026 — TUTORIAL v0.4:** os nove mapas estão implementados em sequência,
 com três por dificuldade, resultado por fase, vidas compartilhadas, pontos
-acumulados e vitória final. O menu oferece instruções pelo joystick, e a
+acumulados e vitória final. O menu oferece treinamento jogável pelo joystick, e a
 interface mostra progresso, cores de dificuldade e paredes contornadas.
 O gerador valida dimensões, curvas, distâncias, alcançabilidade do ponto 5×5 e
 atalhos indesejados. Os testes percorrem M01 até M09 pela lógica real.
-Ensaio físico, áudio, regeneração do `.ioc` e relatório com medições continuam
-pendentes. A calibração ainda usa zona morta sem a histerese adicional proposta.
+O aluno concluiu os nove mapas da v0.3 sem problemas relatados. O `.ioc` foi
+alinhado e a regeneração foi ensaiada; o relatório técnico está preparado.
+Continuam pendentes o reteste do tutorial, áudio e medições físicas.
+A calibração ainda usa zona morta sem a histerese adicional proposta.
 Consulte [CAMPANHA.md](CAMPANHA.md) para instruções, limites e resultados atuais.
 As seções seguintes preservam as metas e decisões do plano completo.
 

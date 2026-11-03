@@ -8,13 +8,15 @@ root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--cc', default='arm-none-eabi-gcc')
 parser.add_argument('--diagnostic', action='store_true')
+parser.add_argument('--project', type=Path, help='Alternate project copy for regeneration checks')
+parser.add_argument('--output', type=Path, help='Separate output directory for the alternate build')
 args = parser.parse_args()
 compiler = shutil.which(args.cc)
 if compiler is None:
     parser.error('Compiler not found. Pass --cc with its executable path.')
-base = root / 'Game_Start2_STM32F411CE'
+base = args.project.resolve() if args.project else root / 'Game_Start2_STM32F411CE'
 kernel = base / 'Middlewares/Third_Party/FreeRTOS/Source'
-output = root / 'build' / ('diagnostico' if args.diagnostic else 'campanha')
+output = args.output.resolve() if args.output else root / 'build' / ('diagnostico' if args.diagnostic else 'campanha')
 output.mkdir(parents=True, exist_ok=True)
 folders = [base/'Core/Src', base/'Drivers/STM32F4xx_HAL_Driver/Src',
            kernel, kernel/'CMSIS_RTOS_V2']

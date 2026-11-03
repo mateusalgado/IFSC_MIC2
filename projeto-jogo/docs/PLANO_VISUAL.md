@@ -9,7 +9,7 @@ executadas no STM32. A [prévia abaixo](assets/proposta-visual.png) é desenhada
 
 ## Interface implementada em 03/11/2026
 
-A versão **9 MAPAS v0.3** implementa menu JOGAR/COMO JOGAR, ajuda pelo joystick,
+A versão **TUTORIAL v0.4** implementa menu JOGAR/COMO JOGAR, treino jogável pelo joystick,
 seleção destacada com borda pulsante no menu, preparação com nome/dificuldade,
 nove segmentos de progresso, HUD com relógio e alerta vermelho nos últimos
 cinco segundos, resultados por fase e vitória final. Ciano identifica fácil,
@@ -21,6 +21,11 @@ Veja as [plantas](assets/campanha-renderizada.png) e as [telas implementadas](as
 As imagens vêm do renderizador C com display simulado, sem comprovar contraste
 ou tempo de resposta na placa. As fontes bitmap existentes foram preservadas.
 Mascote e animações adicionais abaixo são opcionais e continuam fora da versão.
+
+O treino usa uma arena própria para praticar alvo, colisão, desvio e pausa,
+sem penalizar vidas/pontos. Veja as [etapas renderizadas](assets/tutorial-renderizado.png).
+A campanha anterior foi concluída na placa pelo aluno sem problemas relatados;
+o novo tutorial ainda requer reteste físico.
 
 ## O que já existe e o que podemos reaproveitar
 

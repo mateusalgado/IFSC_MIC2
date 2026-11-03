@@ -15,6 +15,7 @@ typedef struct {
     uint8_t spawn_x, spawn_y, goal_x, goal_y;
 } MazeMap;
 extern const MazeMap maze_maps[MAZE_COUNT];
+extern const MazeMap maze_tutorial; /* Practice arena; excluded from campaign. */
 /* Index is the campaign position (0..8); displayed ids are 1..9. */
 const MazeMap *Maze_Get(unsigned index);
 const char *Maze_Difficulty(const MazeMap *map);

@@ -90,6 +90,14 @@ for map_id in range(1, 10):
     masks.append(packed)
 assert all(masks[i] != masks[j] for i in range(9) for j in range(i))
 content += 'const MazeMap maze_maps[MAZE_COUNT] = {\n' + ''.join(metadata) + '};\n'
+# Compact practice arena with an obstacle; drawing and collision share these bits.
+walls = [not (16 <= x < 144 and 40 <= y < 76) or (94 <= x < 102 and 40 <= y < 62)
+         for y in range(112) for x in range(160)]
+packed = [sum(int(walls[i+j]) << j for j in range(8)) for i in range(0, len(walls), 8)]
+content += 'static const uint8_t tutorial_mask[MAZE_BYTES] = {\n'
+for i in range(0, len(packed), 20):
+    content += '    '+', '.join(f'0x{v:02x}' for v in packed[i:i+20])+',\n'
+content += '};\nconst MazeMap maze_tutorial = {tutorial_mask, "TREINO", 0, 0, 1, 36, 24, 58, 130, 58};\n'
 target = root/'Game_Start2_STM32F411CE/Core/Src/maze_mapdata.c'
 if args.check:
     assert target.read_text() == content, 'Map catalog is stale; run generate_map.py'

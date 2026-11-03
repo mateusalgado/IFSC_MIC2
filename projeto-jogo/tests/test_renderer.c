@@ -75,6 +75,7 @@ int main(int argc,char **argv)
     const char *names[]={"calibracao","inicio","preparar","mapa01","pausa","impacto","resultado","concluido","derrota","falha","ajuda"};
     for (int state=GAME_CALIBRATING;state<=GAME_HELP;++state) {
         g.state=(GameState)state;g.scene++;g.reason=GAME_WALL;
+        if (g.state==GAME_HELP) {g.x_milli=24000;g.y_milli=58000;}
         g.lives=state==GAME_OVER?0:state==GAME_HIT?2:3;
         g.score=state==GAME_WON?850:0;
         Renderer_Draw(&g);save(argv[1],names[state]);
@@ -107,6 +108,20 @@ int main(int argc,char **argv)
         g.state=GAME_RESULT;g.scene++;g.active_ms=30000;g.map_score=Game_Score(map,30000,0,0);
         preview_total+=g.map_score;g.score=preview_total;
         Renderer_Draw(&g);snprintf(name,sizeof(name),"resultado%02u",map->id);save(argv[1],name);
+    }
+    for (int step=TUTORIAL_CENTER;step<=TUTORIAL_DONE;++step) {
+        g.state=GAME_HELP;g.tutorial_step=(TutorialStep)step;g.scene++;
+        g.x_milli=step==TUTORIAL_WALL?68000:step==TUTORIAL_IMPACT?91000:
+            step>=TUTORIAL_PAUSE?130000:24000;
+        g.y_milli=58000;g.neutral_ms=200;
+        g.tutorial_wait_ms=0;
+        Renderer_Draw(&g);
+        char name[32];snprintf(name,sizeof(name),"tutorial%d",step);save(argv[1],name);
+        if (step==TUTORIAL_MOVE || step==TUTORIAL_EXIT) {
+            for (int x=25;x<44;++x) {g.x_milli=x*1000;Renderer_Draw(&g);}
+            same_as_full(&g);
+            g.neutral_ms=0;Renderer_Draw(&g);same_as_full(&g);
+        }
     }
     g.state=GAME_WON;g.scene++;Renderer_Draw(&g);save(argv[1],"concluido");
     puts("Renderer passed: eleven states, nine maps/results, menu/countdown/pause/time warning, text bounds, wall geometry, dirty/full equality.");

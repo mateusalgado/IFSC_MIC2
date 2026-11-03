@@ -57,3 +57,15 @@
 
 /* USER CODE END Application */
 
+
+/* USER CODE BEGIN 4 */
+void vApplicationStackOverflowHook(TaskHandle_t task, char *name)
+{
+    (void)task; (void)name;
+    Error_Handler();
+}
+/* USER CODE END 4 */
+
+/* USER CODE BEGIN 5 */
+void vApplicationMallocFailedHook(void) { Error_Handler(); }
+/* USER CODE END 5 */

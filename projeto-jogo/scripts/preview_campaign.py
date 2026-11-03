@@ -31,3 +31,5 @@ sheet([('inicio','MENU'),('ajuda','INSTRUCOES'),('preparar04','PREPARACAO'),
        ('mapa05','JOGO'),('pausa','PAUSA'),('resultado06','RESULTADO'),
        ('resultado09','ULTIMO MAPA'),('concluido','VITORIA'),('derrota','DERROTA')],
       'interface-renderizada.png')
+
+sheet([(f'tutorial{i}', title) for i,title in enumerate(('CENTRALIZAR','MOVER ATE O ALVO','EXPERIMENTAR COLISAO','FEEDBACK SEM PENALIDADE','CONTORNAR E CHEGAR','PRATICAR PAUSA','RETOMAR','CONCLUIR'))], 'tutorial-renderizado.png')

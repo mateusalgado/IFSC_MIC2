@@ -2,6 +2,8 @@
 
 Inspeção dos arquivos fornecidos em 27/10/2026. As primeiras seções descrevem
 o ZIP original; as alterações atuais estão na seção final de adaptação.
+As ressalvas históricas de clock abaixo foram resolvidas em TUTORIAL v0.4;
+o procedimento vigente está em [REGENERACAO.md](REGENERACAO.md).
 
 ## O que existia no ZIP original
 
@@ -105,4 +107,16 @@ ajuda interativa; a interface usa contornos de parede, seleção destacada, rel�
 cores por dificuldade e progresso. Tudo é desenhado com as fontes/primitivas
 existentes, sem imagens externas, alocação por quadro ou nova tarefa RTOS.
 Testes percorrem a campanha inteira e verificam geometria, menus e restauração
-parcial do desenho. Ver [documentação atual](CAMPANHA.md). O ensaio físico desta versão permanece pendente.
+parcial do desenho. Posteriormente, o aluno confirmou a conclusão dos nove mapas
+na placa, sem problemas até o momento. Ver [documentação atual](CAMPANHA.md).
+
+## Tutorial e configuração v0.4 (03/11/2026)
+
+COMO JOGAR passou de instruções estáticas a uma arena jogável com alvo, colisão,
+desvio e pausa. O treino utiliza o movimento/colisão da campanha, sem alterar
+vidas e pontos. A lógica e o desenho são verificados pelos testes de host.
+O `.ioc` passou a explicitar HSI/PLL, ranks ADC e diagnósticos do RTOS;
+PH0/PH1 foram liberados. Hooks e verificação de bootstrap ficam em USER CODE.
+A geração em cópia controlada e o ajuste de protótipo exigido pelo template
+CubeMX 6.18 estão descritos em [REGENERACAO.md](REGENERACAO.md).
+O [relatório](RELATORIO.md) distingue ensaios, relato físico e medições pendentes.

@@ -195,10 +195,43 @@ static void title_menu(void)
     move(&g,0,1000,20);CHECK(g.title_choice==1); /* held axis selects only once */
     Game_Tick(&g,&press,10);CHECK(g.state==GAME_HELP);
     Game_Tick(&g,&hidden,10);CHECK(g.state==GAME_HELP);
-    Game_Tick(&g,&press,10);CHECK(g.state==GAME_TITLE && g.title_choice==1);
-    move(&g,0,1000,20);CHECK(g.title_choice==1); /* no accidental repeat on return */
-    move(&g,0,0,1);move(&g,0,-1000,1);CHECK(g.title_choice==0);
+    Game_Tick(&g,&press,10);CHECK(g.state==GAME_TITLE && g.title_choice==0);
+    move(&g,0,1000,20);CHECK(g.title_choice==0); /* no accidental repeat on return */
+    move(&g,0,0,1);CHECK(g.title_choice==0);
     Game_Tick(&g,&press,10);CHECK(g.state==GAME_READY && g.map_index==0 && g.score==0);
+}
+
+static void practice(void)
+{
+    Game g;Game_Init(&g);Game_Tick(&g,&commands,10);
+    GameInput press=commands, hidden=commands;press.click=true;hidden.render_ready=false;
+    g.title_choice=1;g.lives=2;g.score=1234;
+    Game_Tick(&g,&press,10);CHECK(g.state==GAME_HELP && g.tutorial_step==TUTORIAL_CENTER);
+    for (unsigned i=0;i<100;++i) Game_Tick(&g,&hidden,10);
+    CHECK(g.tutorial_step==TUTORIAL_CENTER && g.neutral_ms==0);
+    move(&g,0,0,50);CHECK(g.tutorial_step==TUTORIAL_MOVE);
+    move(&g,1000,0,190);CHECK(g.tutorial_step==TUTORIAL_WALL);
+    move(&g,0,0,25);move(&g,1000,0,150);CHECK(g.tutorial_step==TUTORIAL_IMPACT);
+    CHECK(g.lives==2 && g.score==1234 && g.collisions==0 && g.active_ms==0);
+    move(&g,0,0,100);CHECK(g.tutorial_step==TUTORIAL_EXIT && Game_X(&g)==24);
+    /* An error in the final exercise resets practice, never the campaign. */
+    move(&g,0,-1000,120);CHECK(g.tutorial_step==TUTORIAL_EXIT && g.lives==2);
+    move(&g,0,0,120);
+    const int path[][2]={{80,58},{80,68},{130,68},{130,58}};
+    for (unsigned p=0;p<4;++p) {
+        for (unsigned tick=0;tick<500 && g.tutorial_step==TUTORIAL_EXIT;++tick) {
+            int dx=path[p][0]-Game_X(&g),dy=path[p][1]-Game_Y(&g);
+            if (!dx && !dy) break;
+            move(&g,dx>0?1000:dx<0?-1000:0,dy>0?1000:dy<0?-1000:0,1);
+        }
+    }
+    CHECK(g.tutorial_step==TUTORIAL_PAUSE);
+    int32_t x=g.x_milli;move(&g,1000,1000,30);CHECK(g.x_milli==x);
+    Game_Tick(&g,&press,10);CHECK(g.tutorial_step==TUTORIAL_RESUME);
+    move(&g,1000,1000,30);CHECK(g.x_milli==x);
+    Game_Tick(&g,&press,10);CHECK(g.tutorial_step==TUTORIAL_DONE);
+    Game_Tick(&g,&press,10);CHECK(g.state==GAME_TITLE && g.score==1234 && g.lives==2);
+    Game_Tick(&g,&press,10);CHECK(g.state==GAME_READY && g.score==0 && g.lives==3);
 }
 
 static void campaign(void)
@@ -286,7 +319,7 @@ static void campaign(void)
 
 int main(void)
 {
-    geometry(); easy_route(); lives_and_pause(); timing(); input(); title_menu(); campaign();
+    geometry(); easy_route(); lives_and_pause(); timing(); input(); title_menu(); practice(); campaign();
     CHECK(Game_Score(Maze_Get(0), 30000,0,0)==850);
     CHECK(Game_Score(Maze_Get(0), 30001,0,0)==845);
     CHECK(Game_Score(Maze_Get(0), 60000,0,0)==700);

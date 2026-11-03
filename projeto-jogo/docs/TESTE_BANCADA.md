@@ -30,9 +30,9 @@ leitor microSD. Detalhes e referências: [HARDWARE.md](HARDWARE.md).
 
 No STM32CubeIDE, importar `Game_Start2_STM32F411CE` como projeto existente,
 compilar Debug e gravar com o ST-Link. Usar o projeto de `projeto-jogo`, não
-o projeto separado dos exemplos do laboratório. Não regenerar pelo CubeMX
-nesta etapa: há uma divergência de clock herdada do exemplo, descrita em
-[BASE_PROFESSOR.md](BASE_PROFESSOR.md).
+o projeto separado dos exemplos do laboratório. O `.ioc` foi alinhado nesta
+revisão; não é necessário regenerar para compilar. Se alterar periféricos, seguir
+[REGENERACAO.md](REGENERACAO.md).
 
 Também é possível usar `scripts/build_base.py`, conforme o README. O script
 com `--diagnostic` gera `build/diagnostico/diagnostico-spi1.elf`, `.hex` e `.bin`. Pelo STM32CubeProgrammer,

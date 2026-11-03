@@ -1,5 +1,11 @@
 # Hardware do jogo
 
+![Componentes fotografados pelo aluno durante a preparação da montagem](assets/componentes-aluno.png)
+
+Foto fornecida pelo aluno nesta conversa, incorporada em 03/11/2026. Mostra os
+componentes e suas inscrições; não comprova as conexões completas nem o jogo
+em execução. A pinagem descrita abaixo é a referência para a montagem.
+
 ## Confirmado pelo usuário
 
 Em 27/10/2026: jogo com **tela, joystick e sons, sem motor**.

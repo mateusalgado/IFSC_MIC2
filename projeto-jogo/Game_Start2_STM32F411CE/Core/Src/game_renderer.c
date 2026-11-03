@@ -154,16 +154,46 @@ void Renderer_Draw(const Game *g)
             button(95,"COMO JOGAR",g->title_choice==1,color);
         }
         break;
-    case GAME_HELP:
+    case GAME_HELP: {
+        MazeMap arena=maze_tutorial;
+        if (g->tutorial_step==TUTORIAL_MOVE) arena.goal_x=68;
+        if (g->tutorial_step==TUTORIAL_DONE) {
+            if (scene) {
+                center(12,"TREINO OK!",GREEN,Font_11x18);
+                center(44,"MOVIMENTO E PAREDES",WHITE,Font_7x10);
+                center(62,"SAIDA E PAUSA",WHITE,Font_7x10);
+                center(82,"AGORA E SUA VEZ",CYAN,Font_7x10);
+                button(108,"VOLTAR AO MENU",true,CYAN);
+            }
+            break;
+        }
         if (scene) {
-            center(8,"COMO JOGAR",CYAN,Font_11x18);
-            center(36,"INCLINE PARA MOVER",WHITE,Font_7x10);
-            center(52,"EVITE AS PAREDES",WHITE,Font_7x10);
-            center(68,"LOSANGO = SAIDA",YELLOW,Font_7x10);
-            center(84,"CLIQUE PARA PAUSAR",WHITE,Font_7x10);
-            button(108,"VOLTAR",true,CYAN);
+            unsigned lesson=g->tutorial_step<=TUTORIAL_MOVE?1:g->tutorial_step<=TUTORIAL_IMPACT?2:g->tutorial_step==TUTORIAL_EXIT?3:4;
+            char title[24];snprintf(title,sizeof(title),"TREINO %u/4",lesson);
+            center(4,title,CYAN,Font_11x18);
+            region(&arena,8,20,144,64);
+            /* Red obstacle is fully inside the same collision mask. */
+            ST7735_FillRectangle(94,56,8,22,RED);
+            player(g,g->tutorial_step==TUTORIAL_IMPACT?RED:GREEN);
+            center(110,g->tutorial_step>=TUTORIAL_PAUSE ? "CLIQUE: CONTINUAR" : "CLIQUE: SAIR",EDGE,Font_7x10);
+        }
+        if (scene || (g->neutral_ms>=200)!=(previous.neutral_ms>=200)) {
+            const char *hint=g->tutorial_step==TUTORIAL_CENTER ? "SOLTE O JOYSTICK" :
+                g->tutorial_step==TUTORIAL_IMPACT ? "NO JOGO: -1 VIDA" :
+                g->tutorial_step==TUTORIAL_PAUSE ? "CLIQUE PARA PAUSAR" :
+                g->tutorial_step==TUTORIAL_RESUME ? "PAUSADO: CLIQUE" :
+                g->tutorial_wait_ms ? "TENTE DE NOVO" :
+                g->neutral_ms<200 ? "CENTRALIZE" :
+                g->tutorial_step==TUTORIAL_MOVE ? "LEVE ATE O ALVO" :
+                g->tutorial_step==TUTORIAL_WALL ? "TOQUE NA PAREDE" : "CONTORNE A PAREDE";
+            ST7735_FillRectangle(0,25,160,10,BG);
+            center(25,hint,g->tutorial_step==TUTORIAL_IMPACT || g->tutorial_wait_ms ? RED : WHITE,Font_7x10);
+        }
+        if (!scene && (Game_X(g)!=Game_X(&previous) || Game_Y(g)!=Game_Y(&previous))) {
+            region(&arena,Game_X(&previous)-2,Game_Y(&previous)-2,5,5);player(g,GREEN);
         }
         break;
+    }
     case GAME_READY: {
         unsigned count=(g->countdown_ms+999)/1000, old=(previous.countdown_ms+999)/1000;
         if (scene) {
