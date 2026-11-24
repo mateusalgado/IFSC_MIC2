@@ -2,6 +2,10 @@
 **/Debug/
 **/Release/
 **/.settings/
+# Compartilhar somente a codificacao do projeto; demais preferencias sao locais.
+!/projeto-jogo/Game_Start2_STM32F411CE/.settings/
+/projeto-jogo/Game_Start2_STM32F411CE/.settings/*
+!/projeto-jogo/Game_Start2_STM32F411CE/.settings/org.eclipse.core.resources.prefs
 **/.metadata/
 *.launch
 

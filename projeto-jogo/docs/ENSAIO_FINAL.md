@@ -37,6 +37,28 @@ Após o teste, informar commit, resultado do tutorial/campanha, duração e qual
 erro observado. Fotos/vídeo e medições podem ser acrescentados depois; a execução
 em outro computador não será tratada como observada diretamente pelo assistente.
 
+### Aviso "Project has no explicit encoding set"
+
+Esse aviso indica que o projeto herda a codificação do workspace. A preferência
+`Game_Start2_STM32F411CE/.settings/org.eclipse.core.resources.prefs` agora é
+versionada e define UTF-8 explicitamente. As demais preferências locais do IDE
+continuam ignoradas pelo Git.
+
+Depois de atualizar o clone, execute Refresh no projeto. Se o aviso persistir,
+clique com o botão direito no projeto citado e abra **Properties → Resource →
+Text file encoding → Other: UTF-8 → Apply and Close**. Esse procedimento está
+descrito na [documentação do Eclipse CDT](https://help.eclipse.org/latest/topic/org.eclipse.cdt.doc.user/reference/cdt_u_prop_resource.htm).
+
+Se o aviso citar `projeto-jogo`, confira **Properties → Resource → Location**:
+o projeto de firmware a importar é a subpasta `projeto-jogo/Game_Start2_STM32F411CE`,
+que contém `.project`, `.cproject` e `Core`. A pasta superior reúne também mapas,
+documentação e testes. Um nome diferente pode ser apenas uma renomeação no IDE;
+confira o caminho antes de importar outro projeto.
+
+Se o projeto foi importado com **Copy projects into workspace**, ele é uma
+cópia separada do clone: `git pull` no clone não atualiza essa cópia. Nesse caso,
+aplique a preferência nela também e confira se está compilando o código atualizado.
+
 ## O que precisa estar conectado
 
 - Placa STM32 com display e joystick montados conforme [HARDWARE.md](HARDWARE.md).
