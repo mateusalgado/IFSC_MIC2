@@ -85,7 +85,7 @@ informados. Também há confirmação anterior de funcionamento do diagnóstico.
 - Medir `game_input_stack_free`, `game_logic_stack_free`,
   `game_render_stack_free`, `game_min_free_heap` e `game_late_ticks`.
 - Registrar fotos/vídeo da montagem final e ensaio contínuo.
-- Implementar e testar áudio após escolher o buzzer e o circuito.
+- Registrar a concordância docente com a entrega sem áudio, decidida pelo aluno em 24/11/2026.
 
 ## Relação com os conteúdos da disciplina
 
@@ -99,8 +99,9 @@ informados. Também há confirmação anterior de funcionamento do diagnóstico.
 
 O [relatório consolidado](docs/RELATORIO.md) reúne fundamentação e evidências.
 O [roteiro de entrega](docs/ENTREGA.md) concentra pendências, demonstração e
-campos para as medições reais. Áudio e aprovação docente continuam abertos;
-a documentação não declara esses requisitos concluídos.
+campos para as medições reais. Áudio foi retirado do escopo pelo aluno;
+a aprovação docente dessa exceção e da ideia ainda precisa ser registrada.
+O [ensaio final](docs/ENSAIO_FINAL.md) organiza a participação do aluno e as leituras na placa.
 
 ---
 

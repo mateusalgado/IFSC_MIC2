@@ -9,7 +9,10 @@ Fornecidos pelo usuário no workspace MIC2 em 27/10/2026:
 
 Foram extraídos 154 arquivos de projeto, fontes, bibliotecas e configuração.
 Foram omitidos diretórios Debug/Release e metadados de sistema, preservando as
-fontes originais e avisos de licença. O ZIP original permanece na raiz local de MIC2.
+fontes originais e avisos de licença. O ZIP original está em
+[`referencias/Game_Start2_STM32F411CE.zip`](Game_Start2_STM32F411CE.zip), junto do
+enunciado. A cópia idêntica do PDF que estava na raiz foi preservada em
+`MIC2/arquivos/duplicados/` durante a organização de 24/11/2026.
 Não se atribui autoria das bibliotecas ou exemplos do professor ao aluno.
 
 A documentação e o script de compilação nesta pasta são novos. O conteúdo

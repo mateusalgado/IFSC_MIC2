@@ -4,7 +4,7 @@
 
 [Sumário do projeto](../README.md) · [Relatório consolidado](RELATORIO.md)
 
-Revisão de 03/11/2026, **TUTORIAL v0.4**. Este é o índice para apresentação e
+Revisão documental de 24/11/2026, firmware **TUTORIAL v0.4**. Este é o índice para apresentação e
 conferência do trabalho. A campanha foi concluída na placa pelo aluno, sem
 problemas relatados até o momento. O tutorial novo ainda precisa desse reteste.
 
@@ -37,20 +37,41 @@ problemas relatados até o momento. O tutorial novo ainda precisa desse reteste.
 
 ## Fechamento da entrega
 
+### Conferência após a organização de 24/11/2026
+
+O projeto foi separado em `MIC2/projeto-jogo`, sem alterações no firmware.
+No novo caminho foram executados com sucesso:
+
+- `check_config.py`: contrato entre CubeMX e fontes.
+- `generate_map.py --check`: geometria e catálogo dos nove mapas.
+- `test_host.py --sanitize`, com GCC no Ubuntu/WSL: 8.348 verificações de lógica,
+  além das suítes de renderização e do driver ST7735; sem falhas reportadas.
+- `build_base.py` e `build_base.py --diagnostic`, com GNU Arm do STM32CubeIDE:
+  48 objetos ligados em cada variante, gerando ELF, HEX e BIN.
+
+O firmware para a campanha está em `build/campanha/labirinto-campanha.hex`.
+Essa conferência foi feita no computador. Não houve gravação, novo ensaio na
+placa ou medição física nesta data. As pendências abaixo continuam abertas;
+o aluno decidiu retirar áudio do escopo em 24/11/2026. O enunciado original
+prevê sons, e a concordância docente com essa exceção ainda precisa ser registrada.
+
+### Lista de conclusão
+
 - [x] Nove mapas, três dificuldades, pontuação, vidas, pausa, derrota e reinício.
 - [x] Campanha concluída na placa, conforme relato do aluno.
 - [x] Tutorial interativo implementado e testado no computador.
 - [x] `.ioc` alinhado, relatório técnico e instruções de reprodução preparados.
 - [ ] Retestar TUTORIAL v0.4 na placa e registrar commit, resultado e duração.
-- [ ] Escolher/montar buzzer e implementar/verificar sons exigidos no enunciado.
+- [x] Escopo da entrega definido pelo aluno: sem buzzer e sem áudio (24/11/2026).
+- [ ] Registrar concordância do professor com a exceção ao requisito de sons.
 - [ ] Registrar aprovação da ideia pelo professor e identificação acadêmica completa.
 - [ ] Acrescentar fotografia legível da montagem/MCU e vídeo da demonstração.
 - [ ] Preencher medições de calibração, duração das tarefas, margens de pilha/heap
   e ensaio contínuo descritos no relatório.
 
-O requisito de sons continua aberto. Portanto, esta revisão deixa a documentação
-organizada e o software disponível para teste, mas não declara o atendimento
-integral do enunciado antes de concluir as pendências acima.
+Áudio não é uma tarefa de implementação desta entrega. A documentação registra
+a diferença em relação ao enunciado, sem presumir aprovação docente.
+O [ensaio final](ENSAIO_FINAL.md) detalha o que conectar e o que observar na placa.
 
 ## Roteiro sugerido de apresentação
 
@@ -61,14 +82,14 @@ integral do enunciado antes de concluir as pendências acima.
 5. Mostrar vitória após M09, derrota e reinício desde M01.
 6. Explicar as três tarefas, filas, callbacks curtos e dono único do display.
 7. Mostrar testes, resultado da compilação e medições reais registradas.
-8. Demonstrar o áudio quando implementado; até lá, declarar a pendência.
+8. Informar que a entrega não inclui áudio e registrar a posição do professor.
 
 ## Registro do ensaio final
 
 Preencher somente após o teste real:
 
 - Data, responsável, versão e commit: pendente.
-- Placa/MCU, alimentação e buzzer: pendente.
+- Placa/MCU e alimentação: pendente. Buzzer: fora do escopo.
 - Tutorial: completar, repetir após erro e sair para o menu — pendente.
 - Campanha desta revisão: nove mapas, mudanças de dificuldade, pausa e reinício — pendente.
 - Duração, problemas encontrados, correções e novo ensaio — pendente.

@@ -7,7 +7,7 @@ Materiais, exemplos e projeto da disciplina. O trabalho foi reiniciado em
 
 ## Projetos
 
-- [Laboratório FreeRTOS no STM32F411](README-labRTOS.md): 16 exemplos de tarefas,
+- [Laboratório FreeRTOS no STM32F411](laboratorios/freertos/README.md): 16 exemplos de tarefas,
   prioridades, comunicação, sincronização e interrupções, com USB CDC.
 - [Jogo: Labirinto de Precisão](projeto-jogo/README.md), com nove mapas jogáveis,
   três por dificuldade, tutorial interativo e diagnóstico opcional.
@@ -22,6 +22,26 @@ Materiais, exemplos e projeto da disciplina. O trabalho foi reiniciado em
 - [Enunciado original](projeto-jogo/referencias/Projeto_uC_II_2026_02.pdf).
 
 ## Usar o repositório
+
+### Organização das pastas
+
+- `projeto-jogo/`: projeto independente do Labirinto de Precisão, com firmware,
+  mapas, documentação, testes, scripts e materiais originais do professor.
+- `laboratorios/freertos/`: exemplos FreeRTOS, instruções e ZIP de referência.
+- `laboratorios/maquina-lavar/`: firmware STM32F103 e simulação Proteus da máquina de lavar.
+- `materiais/slides/`: apresentações da disciplina.
+- `avaliacoes/prova-02/`: entrega da segunda avaliação.
+- `arquivos/`: cópias preservadas, estrutura antiga e registro da organização;
+  conteúdo local, ignorado pelo Git.
+
+O Git agora fica na raiz de `MIC2`, preservando o histórico e o remoto existentes.
+Os nomes internos `Game_Start2_STM32F411CE`, `ex_Barry_USB_STM32F411CE` e
+`washmachine` foram mantidos por serem identificadores dos projetos STM32.
+Detalhes da mudança: [organização e caminhos](docs/ORGANIZACAO.md).
+
+Para trabalhar apenas no jogo, abra a pasta `projeto-jogo`. Ela contém tudo
+que os scripts de compilação e teste precisam; o histórico Git e o workflow
+do GitHub ficam na raiz da disciplina.
 
 A documentação do projeto segue o padrão de PROGOO, com capa, sumário e
 navegação entre quatro páginas:

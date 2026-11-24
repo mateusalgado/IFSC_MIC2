@@ -1,7 +1,7 @@
 # Laboratório FreeRTOS no STM32F411CE
 
 O projeto `ex_Barry_USB_STM32F411CE` é a base para executar os 16 exemplos do
-arquivo `exemplos_FreeRTOS.zip` no STM32F411CEU6. O clock, o GPIO e a USB CDC
+arquivo `referencias/exemplos_FreeRTOS.zip` no STM32F411CEU6. O clock, o GPIO e a USB CDC
 continuam configurados pelo projeto Barry. A lógica dos exercícios está em
 `Core/Src/lab_examples.c`; somente um exemplo é compilado por vez.
 
@@ -18,7 +18,7 @@ No Linux, baixe o repositório com:
 
 ```bash
 git clone https://github.com/mateusalgado/IFSC_MIC2.git
-cd IFSC_MIC2
+cd IFSC_MIC2/laboratorios/freertos
 ```
 
 Depois, importe a pasta

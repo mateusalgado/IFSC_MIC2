@@ -1,5 +1,12 @@
 # Labirinto de Precisão — plano de implementação
 
+> **Atualização de escopo, 24/11/2026:** o aluno decidiu entregar sem buzzer e
+> sem áudio. As propostas de tarefa, fila, timer e efeitos sonoros abaixo são
+> histórico do plano inicial e não devem ser implementadas nesta entrega.
+> O escopo vigente está em [ESCOPO.md](ESCOPO.md); a arquitetura implementada,
+> com três tarefas, está em [RELATORIO.md](RELATORIO.md). Falta registrar a
+> concordância do professor com a exceção ao requisito de sons.
+
 Proposta v1, 27/10/2026. Nome provisório. A ideia escolhida pelo aluno é conduzir
 um ponto por diferentes plantas de labirintos sem encostar nas paredes. Os
 números abaixo são parâmetros iniciais de projeto, sujeitos a ajuste após jogar
@@ -410,11 +417,11 @@ Base de estudo utilizada:
 
 - [Enunciado](../referencias/Projeto_uC_II_2026_02.pdf): ARM + RTOS, display,
   joystick, sons, telas inicial/final, reinício pelo joystick e três dificuldades.
-- `SLIDES/uCII_01_Tecnicas_Programacao.pdf`, páginas 24 e 29 do PDF local: projetar
+- `materiais/slides/01-tecnicas-de-programacao.pdf`, páginas 24 e 29 do PDF local: projetar
   FSM, separar detalhes de hardware e verificar comportamentos indevidos.
-- `SLIDES/uCII_04_RTOS.pdf`, páginas 18, 22, 31–37: tarefas, preempção, semáforos,
+- `materiais/slides/04-rtos.pdf`, páginas 18, 22, 31–37: tarefas, preempção, semáforos,
   inversão de prioridade, deadlock e filas. Slides disponíveis no workspace MIC2.
-- [Exercícios do laboratório](../../ex_Barry_USB_STM32F411CE/Core/Src/lab_examples.c):
+- [Exercícios do laboratório](../../laboratorios/freertos/ex_Barry_USB_STM32F411CE/Core/Src/lab_examples.c):
   periodicidade (5/6), filas/mutex (10/11), sinalização de interrupções (12–14).
 - [FreeRTOS: periodicidade](https://freertos.org/Documentation/02-Kernel/04-API-references/02-Task-control/02-vTaskDelayUntil)
   e [manual da API](https://en.freertos.org/media/2018/FreeRTOS_Reference_Manual_V10.0.0.pdf):

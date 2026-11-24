@@ -29,7 +29,8 @@ Quando as vidas acabam, aparece a derrota e o botão permite reiniciar.
 - **RF05 — Pausa:** permitir pausar, continuar ou sair para o menu.
 - **RF06 — Encerramento:** exibir resultado, vitória/derrota e reiniciar pelo botão.
 - **RF07 — Tutorial:** ensinar movimento, colisão, desvio e pausa com prática.
-- **RF08 — Áudio:** apresentar sons. **Pendente** de buzzer, circuito e implementação.
+- **RF08 — Áudio (enunciado):** fora do escopo da entrega por decisão do aluno
+  em 24/11/2026. A concordância do professor com a exceção ainda não foi registrada.
 
 RF01–RF07 estão implementados. A conclusão dos nove mapas na placa foi relatada
 pelo aluno; o novo tutorial ainda aguarda reteste físico.

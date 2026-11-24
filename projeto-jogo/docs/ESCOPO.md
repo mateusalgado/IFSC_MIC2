@@ -1,6 +1,6 @@
 # Escopo — Labirinto de Precisão
 
-Atualizado em 03/11/2026. O usuário escolheu um jogo com diferentes plantas de
+Atualizado em 24/11/2026. O usuário escolheu um jogo com diferentes plantas de
 labirinto, conduzindo um ponto pelo caminho sem tocar nas paredes. Também
 confirmou que deseja uma interface bonita e interativa, não inteligência artificial.
 
@@ -16,6 +16,11 @@ imagens, montagem, qualidade e domínio do código/hardware e desenvolvimento em
 sala. Fonte: [enunciado](../referencias/Projeto_uC_II_2026_02.pdf).
 
 ## Proposta de entrega
+
+**Decisão de 24/11/2026:** entregar sem buzzer e sem áudio. Não será necessário
+adquirir componente, montar circuito ou implementar tarefa de som. O requisito
+original de sons permanece registrado acima; a concordância do professor com
+essa exceção ainda não foi informada.
 
 Campanha de nove mapas, três por dificuldade, três vidas e pontuação por mapa
 concluído. Paredes mais próximas e percursos mais complexos aumentam a dificuldade;
@@ -46,17 +51,17 @@ em [CAMPANHA.md](CAMPANHA.md). A aprovação do professor permanece sem registro
 - [x] Relatório técnico e índice de entrega preparados.
 - [ ] Tutorial v0.4 retestado na placa.
 - [ ] Contraste, seleção dos menus e resposta visual conferidos no display físico.
-- [ ] Buzzer escolhido, circuito dimensionado e áudio funcionando.
+- [ ] Concordância do professor com a entrega sem áudio registrada.
 - [ ] Arte final, testes, medições e relatório concluídos.
 
 O firmware padrão desta revisão é a campanha de nove mapas; o diagnóstico é
 uma opção de build. Ver [CAMPANHA.md](CAMPANHA.md). O hardware
-segue com tela, joystick e som, sem motor. A ideia do elevador permanece em MAQ.
+segue com tela e joystick, sem buzzer e sem motor. A ideia do elevador permanece em MAQ.
 
 ## Próxima entrega concreta
 
 Gravar TUTORIAL v0.4, completar COMO JOGAR e retestar a campanha. Registrar
-versão, duração e observações. Fechar áudio, medições RTOS e evidências físicas
+versão, duração e observações. Fechar medições RTOS e evidências físicas
 para concluir o [relatório](RELATORIO.md). O [índice de entrega](ENTREGA.md)
 reúne material, demonstração e pendências. A sequência M0–M6 permanece no plano.
 

@@ -27,7 +27,8 @@ de uso máximo. A tela tem proprietário único; não exige mutex entre tarefas.
 
 TFT: VCC/LED em 3V3, GND em G, CS PB12, RESET PB13, A0/DC PB14,
 SDA/MOSI PA7 e SCK PA5. Joystick: alimentação 3V3, VRY PA0, VRX PA1 e SW PC15.
-PA8 permanece reservado ao áudio; não há buzzer implementado nesta revisão.
+PA8 fica sem ligação. Por decisão do aluno em 24/11/2026, esta entrega não terá
+buzzer nem áudio; a arquitetura permanece com três tarefas.
 
 O MCU usa HSI/PLL a 96 MHz, SPI1 nominal de 12 MHz e ADC1 com DMA circular.
 O tick HAL usa TIM4. Pinagem, imagem dos componentes e alimentação:

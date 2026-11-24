@@ -228,7 +228,8 @@ não representam falhas observadas.
 - [ ] Registrar fotos/vídeo, tempos de conclusão e dificuldade de cada mapa.
 - [ ] Sessão contínua de 30 minutos e medições de pilha/heap/atrasos.
 
-**Pendências:** reteste físico do tutorial/regeneração, áudio (buzzer/circuito
-ainda não escolhidos), aprovação da ideia e medições para fechar o
+**Pendências:** reteste físico do tutorial/regeneração, aprovação da ideia,
+concordância docente com a entrega sem som e medições para fechar o
 [relatório](RELATORIO.md). O [roteiro de entrega](ENTREGA.md) reúne os documentos
-e evidências necessárias. Mascote e animações adicionais são opcionais.
+e evidências necessárias. Buzzer e áudio foram retirados do escopo pelo aluno
+em 24/11/2026. Mascote e animações adicionais são opcionais.

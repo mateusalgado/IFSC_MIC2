@@ -8,11 +8,12 @@ em execução. A pinagem descrita abaixo é a referência para a montagem.
 
 ## Confirmado pelo usuário
 
-Em 27/10/2026: jogo com **tela, joystick e sons, sem motor**.
+Em 24/11/2026: jogo com **tela e joystick, sem buzzer e sem motor**.
+Essa decisão substitui a intenção inicial de incluir sons.
 
 - Display: a foto posterior confirma a inscrição **“1.8 TFT SPI 128*160 V1.1”**.
 - Joystick: módulo com terminais **SW, VRY, VRX, +5V e GND**, confirmados na foto.
-- Buzzer: ainda não adquirido.
+- Buzzer: excluído do escopo pelo aluno; não é necessário adquirir ou conectar.
 - Placa STM32 física: modelo ainda não informado; o projeto do professor seleciona F411CEU6.
 
 A foto confirma o layout vermelho com leitor microSD e conector VCC, GND, CS,
@@ -69,21 +70,12 @@ As entradas ADC devem respeitar a faixa analógica do MCU; não presumir que a
 tolerância de determinados GPIOs a 5 V se aplique ao ADC. Referência:
 [datasheet STM32F411](https://www.st.com/resource/en/datasheet/stm32f411ce.pdf).
 
-## Som a selecionar
+## Entrega sem áudio
 
-Preferência de projeto: **transdutor piezoelétrico de excitação externa**, vendido
-frequentemente como buzzer passivo, para gerar notas e efeitos pelo timer. Modelo,
-tensão, frequência de operação, capacitância/corrente e driver ainda serão escolhidos.
-Não há lista de compra final ou autorização de ligação direta ao GPIO.
-
-Reservar provisoriamente **PA8 / TIM1_CH1** para o sinal de áudio. Isso não conflita
-com ADC/SPI/SWD da base; TIM4 continua como timebase HAL. A configuração de áudio
-ainda não foi adicionada ao firmware.
-
-Um buzzer com oscilador interno serve para bipes, mas oferece menor liberdade
-para produzir diferentes notas. A escolha do circuito depende do componente:
-consultar os [exemplos de acionamento da Murata](https://www.murata.com/products/sound/library/basic/circuit)
-e o datasheet do modelo escolhido antes de dimensionar transistor e resistores.
+O aluno retirou buzzer e áudio do escopo em 24/11/2026. Não há circuito,
+timer ou tarefa de som a implementar para esta entrega. **PA8/A8 fica sem ligação**.
+O firmware existente já funciona sem áudio e não precisa ser modificado para isso.
+A concordância do professor com a exceção ao enunciado permanece sem registro.
 
 ## Preparação da bancada
 
@@ -94,10 +86,10 @@ Deixar SD_CS, SD_MOSI, SD_MISO e SD_SCK desconectados; não há uso de microSD n
 Não é possível certificar as conexões atuais pela foto, pois as outras pontas
 dos fios dos módulos não aparecem.
 
-Faltam seleção e circuito do buzzer, identificação legível do MCU e medições
-de calibração/estabilidade. O teste funcional do diagnóstico foi relatado como
+Faltam identificação legível do MCU e medições de calibração/estabilidade.
+O teste funcional do diagnóstico foi relatado como
 bem-sucedido pelo aluno em 27/10/2026.
-PA8/A8 permanece reservado, sem ligação de buzzer nesta etapa. O firmware padrão
+PA8/A8 permanece sem ligação. O firmware padrão
 é o [jogo de nove mapas](CAMPANHA.md); o diagnóstico de
 [TESTE_BANCADA.md](TESTE_BANCADA.md) continua opcional. A pinagem SPI1, ADC e botão
 do professor foi mantida.

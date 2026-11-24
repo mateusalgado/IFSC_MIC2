@@ -52,6 +52,8 @@ adaptada ao sistema embarcado em C e à arquitetura FreeRTOS.
 
 ### Acesso rápido
 
+- [Compilar e testar em outro computador](docs/ENSAIO_FINAL.md#teste-em-outro-computador).
+- [O que falta para concluir a entrega](docs/ENTREGA.md#fechamento-da-entrega).
 - [Compilar, gravar e testar a versão atual](docs/CAMPANHA.md).
 - [Conexões de hardware](docs/HARDWARE.md).
 - [Relatório técnico consolidado](docs/RELATORIO.md).
@@ -62,10 +64,18 @@ adaptada ao sistema embarcado em C e à arquitetura FreeRTOS.
 
 ### Situação da entrega
 
+**Pasta reorganizada em 24/11/2026:** o jogo agora fica diretamente em
+`MIC2/projeto-jogo`, separado dos laboratórios. Execute os scripts a partir
+desta pasta e importe `Game_Start2_STM32F411CE` no CubeIDE. A reorganização
+preserva o firmware TUTORIAL v0.4; não representa um novo teste na placa.
+
 O aluno confirmou a conclusão dos nove mapas da versão anterior ao tutorial,
 sem problemas até o momento. O tutorial v0.4 passou nos testes do computador e
-aguarda teste físico. Áudio, identificação docente e registros de bancada
-continuam pendentes, conforme o [roteiro de entrega](docs/ENTREGA.md).
+aguarda teste físico. Em 24/11/2026, o aluno decidiu entregar sem buzzer e sem
+áudio. Falta registrar a concordância do professor com essa exceção ao enunciado,
+a identificação docente e os registros de bancada, conforme o
+[roteiro de entrega](docs/ENTREGA.md). A sessão prática está preparada em
+[ensaio final](docs/ENSAIO_FINAL.md).
 
 ---
 

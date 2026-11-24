@@ -6,7 +6,7 @@
 [2. Projeto](../projeto.md) · [3. Implementação](../implementacao.md) ·
 [4. Testes](../testes.md)
 
-**Versão de trabalho: TUTORIAL v0.4 — 03/11/2026.**
+**Firmware: TUTORIAL v0.4 — 03/11/2026. Revisão documental: 24/11/2026.**
 
 Disciplina: Microcontroladores II — IFSC. Aluno: Mateus Salgado Barboza Costa.
 Professor: identificação a confirmar para a entrega. Este relatório descreve o que está
@@ -22,7 +22,7 @@ FreeRTOS para separar aquisição de entrada, regras e atualização gráfica.
 A comunicação usa filas e snapshots; uma única tarefa acessa o display.
 A aplicação inclui vidas, tempo, pontuação acumulada, pausa, reinício, vitória
 final e um tutorial interativo em uma arena de treinamento sem penalidades.
-O áudio permanece pendente da escolha e montagem do buzzer.
+Por decisão do aluno em 24/11/2026, a entrega não inclui buzzer nem áudio.
 
 ## 1. Objetivo e requisitos
 
@@ -34,8 +34,8 @@ não integra este firmware.
 
 Requisitos implementados em software: alvo ARM, RTOS, display, joystick,
 título, derrota, reinício pelo botão e três níveis de dificuldade.
-A aprovação da ideia e o requisito de sons ainda precisam ser concluídos ou
-registrados. Os nove mapas e o tutorial não substituem a validação física.
+A aprovação da ideia e a concordância do professor com a entrega sem sons ainda
+precisam ser registradas. Os nove mapas e o tutorial não substituem a validação física.
 
 ## 2. Hardware e alimentação
 
@@ -53,13 +53,13 @@ Ligações mantidas:
 - Joystick: VRY em PA0, VRX em PA1, SW em PC15 com pull-up; alimentação em
   3V3 e GND comum, inclusive no terminal do módulo rotulado +5V.
 - Depuração: SWD nos pinos PA13/PA14; não confundir com SCK do display.
-- PA8 reservado para áudio futuro; microSD sem utilização.
+- PA8 sem ligação; buzzer excluído do escopo e microSD sem utilização.
 
 O esquema detalhado e cuidados de montagem estão em [HARDWARE.md](HARDWARE.md).
 Há uma [fotografia dos componentes fornecida pelo aluno](assets/componentes-aluno.png),
 que registra a preparação da montagem, sem mostrar o firmware em execução.
 Inserir na entrega final fotografia da montagem real, identificação dos
-componentes e circuito do buzzer. Não foram produzidas imagens que simulem
+componentes. Não foram produzidas imagens que simulem
 uma fotografia de ensaio físico.
 
 ## 3. Configuração do microcontrolador
@@ -234,7 +234,7 @@ O tutorial v0.4 e a cópia regenerada ainda precisam de reteste físico.
   e `game_render_stack_free`, em palavras de 32 bits.
 - Heap mínimo: `game_min_free_heap`, em bytes; atrasos: `game_late_ticks`.
 - Sessão contínua de 30 minutos, fotos e vídeo: pendente de evidências.
-- Resultado do tutorial na placa e áudio: pendente.
+- Resultado do tutorial na placa: pendente. Áudio: fora do escopo por decisão do aluno.
 
 Os tamanhos estáticos de compilação constam em [CAMPANHA.md](CAMPANHA.md).
 BSS inclui heap reservado e não equivale a memória máxima usada em execução.
@@ -243,8 +243,9 @@ BSS inclui heap reservado e não equivale a memória máxima usada em execução
 
 O software implementa a campanha de nove mapas e um treino interativo,
 com arquitetura concorrente, regras testáveis e compilação reproduzível.
-Ainda faltam áudio, medições e registro sistemático de bancada, identificação
-física completa e aprovação docente. Os testes de computador não simulam os
+Ainda faltam medições e registro sistemático de bancada, identificação
+física completa e aprovação docente, incluindo a exceção ao requisito de sons.
+Os testes de computador não simulam os
 tempos reais do escalonador ou a integridade elétrica da montagem.
 A conclusão final deve ser atualizada após essas atividades, sem substituir
 resultados medidos por metas ou estimativas.

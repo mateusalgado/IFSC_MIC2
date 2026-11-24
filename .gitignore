@@ -14,3 +14,13 @@ Thumbs.db
 *.swp
 *.tmp
 *.bak
+
+# Arquivo local da reorganizacao e copias preservadas
+/arquivos/
+
+# Metadados locais do Proteus, assistentes e Python
+*.pdsbak
+*.workspace
+**/.claude/
+**/__pycache__/
+*.pyc

@@ -1,0 +1,6 @@
+# Preserve source and IDE file bytes when moving STM32 projects.
+laboratorios/freertos/ex_Barry_USB_STM32F411CE/** -text
+laboratorios/maquina-lavar/** -text
+
+# Keep project documentation portable.
+*.md text eol=lf
