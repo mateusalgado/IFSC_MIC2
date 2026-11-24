@@ -13,6 +13,12 @@ Professor: identificação a confirmar para a entrega. Este relatório descreve 
 implementado e distingue ensaios automatizados, relato do aluno e medições
 pendentes. Não é uma declaração de aprovação docente ou de validação final.
 
+**Revisão de código em 24/11/2026:** aplicação refatorada para leitura didática,
+com diagnóstico separado e exemplos antigos em `Legacy`. A
+[comparação com a base](COMPARACAO_PROFESSOR.md) detalha as alterações; o
+[registro de validação](VALIDACAO_REFATORACAO.md) atualiza builds e testes.
+Resultados históricos de regeneração e testes físicos abaixo mantêm suas datas.
+
 ## Resumo
 
 Foi desenvolvido um jogo de precisão para STM32F411, display TFT SPI 160×128 e

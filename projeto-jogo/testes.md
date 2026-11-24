@@ -20,6 +20,14 @@ ligações elétricas. Uma partida concluída não substitui todos os casos de b
 
 ## Resultados automatizados
 
+**Revisão de 24/11/2026:** a refatoração didática passou novamente nas 8348
+verificações, nos testes de desenho/driver e em sete cenários novos de tarefas
+e filas. As 45 imagens permaneceram idênticas. Campanha e diagnóstico foram
+compilados com 46 objetos. Valores de memória, comandos e limitações estão no
+[registro desta refatoração](docs/VALIDACAO_REFATORACAO.md).
+
+### Registro anterior à refatoração
+
 Firmware de referência: **TUTORIAL v0.4**, commit
 [`8283d69`](https://github.com/mateusalgado/IFSC_MIC2/commit/8283d694e7bbd37f82338290b85a7e4accaa9edf),
 03/11/2026. A [execução do GitHub Actions](https://github.com/mateusalgado/IFSC_MIC2/actions/runs/41644819836)
@@ -57,7 +65,8 @@ Fontes: [test_game.c](tests/test_game.c), [test_renderer.c](tests/test_renderer.
 
 ## Compilação e regeneração
 
-Compilação local com GNU Arm GCC 14.3.1, 48 objetos, `-O0 -Wall`, sem avisos:
+Registro anterior à refatoração: compilação com GNU Arm GCC 14.3.1,
+48 objetos, `-O0 -Wall`, sem avisos:
 
 - Jogo salvo: text 76360, data 120, bss 24272 bytes.
 - Diagnóstico salvo: text 32292, data 104, bss 21616 bytes.

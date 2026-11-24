@@ -29,18 +29,25 @@ projeto-jogo/
     Core/Src/
       main.c                  HAL, perifericos e bootstrap
       app_game.c              tarefas, filas e diagnosticos RTOS
+      app_diagnostic.c        modo alternativo de teste de hardware
       joy_input.c             calibracao, filtro e debounce
       maze_game.c             regras, estados e tutorial
       maze_map.c              consultas e colisao
       maze_mapdata.c          mascaras geradas
       game_renderer.c         telas e atualizacao parcial
       st7735.c / fonts.c      driver e fontes
+    Legacy/                   exemplos do professor, fora do build
     Game_Start2_STM32F411CE.ioc
   assets/maps/                nove plantas JSON
   scripts/                    geracao, compilacao e verificacao
   tests/                      logica, entrada, desenho e SPI
   docs/                       relatorio, montagem e evidencias
 ```
+
+O [guia de comparação com a base](docs/COMPARACAO_PROFESSOR.md) explica as
+bibliotecas, estruturas, funções e a refatoração didática de 24/11/2026.
+O [inventário completo](docs/comparacao/INVENTARIO.md) permite localizar cada
+função. O firmware é C, organizado em módulos e estruturas, sem classes C++.
 
 ## Decisões de implementação
 
@@ -64,11 +71,12 @@ uma cópia de `Game`, e a tarefa de desenho confirma o identificador de cena.
 Exemplo real de transição após alcançar a saída:
 
 ```c
-if (Maze_Exit(Maze_Get(g->map_index), Game_X(g), Game_Y(g))) {
-    g->map_score = Game_Score(Maze_Get(g->map_index),
-                             g->active_ms, g->collisions, g->timeouts);
-    g->score += g->map_score;
-    state(g, GAME_RESULT);
+if (Maze_Exit(Maze_Get(game->map_index), Game_X(game), Game_Y(game)))
+{
+    game->map_score = Game_Score(Maze_Get(game->map_index), game->active_ms,
+                                game->collisions, game->timeouts);
+    game->score += game->map_score;
+    EnterState(game, GAME_RESULT);
 }
 ```
 

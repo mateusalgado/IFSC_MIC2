@@ -334,9 +334,10 @@ void ST7735_draw_figure(uint32_t x, uint32_t y, FigDef fig, uint16_t color)
 //------------------------------------------------------------------------------
 void ST7735_write_nr(uint32_t x, uint32_t y, int nr, FontDef font, uint16_t color, uint16_t bgcolor)
 {
-	char string_nr[10];
+	/* int de 32 bits: sinal + 10 digitos + terminador. */
+	char string_nr[12];
 
-	sprintf(string_nr, "%d",nr);
+	snprintf(string_nr, sizeof(string_nr), "%d", nr);
 	ST7735_WriteString(x, y, string_nr, font, color, bgcolor);
 }
 //------------------------------------------------------------------------------

@@ -5,6 +5,10 @@ o ZIP original; as alterações atuais estão na seção final de adaptação.
 As ressalvas históricas de clock abaixo foram resolvidas em TUTORIAL v0.4;
 o procedimento vigente está em [REGENERACAO.md](REGENERACAO.md).
 
+A [comparação atual e guia didático](COMPARACAO_PROFESSOR.md), de 24/11/2026,
+inclui inventário de funções/tipos e a refatoração da aplicação. As seções
+abaixo preservam o registro histórico de desenvolvimento.
+
 ## O que existia no ZIP original
 
 - STM32F411CEU6, configuração de CPU para 96 MHz e HAL com timebase TIM4.

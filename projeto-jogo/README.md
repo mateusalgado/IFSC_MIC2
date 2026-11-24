@@ -52,6 +52,8 @@ adaptada ao sistema embarcado em C e à arquitetura FreeRTOS.
 
 ### Acesso rápido
 
+- [Comparação com o professor e guia didático de C/RTOS](docs/COMPARACAO_PROFESSOR.md).
+- [Inventário de arquivos, funções e tipos](docs/comparacao/INVENTARIO.md).
 - [Compilar e testar em outro computador](docs/ENSAIO_FINAL.md#teste-em-outro-computador).
 - [O que falta para concluir a entrega](docs/ENTREGA.md#fechamento-da-entrega).
 - [Compilar, gravar e testar a versão atual](docs/CAMPANHA.md).
@@ -63,6 +65,12 @@ adaptada ao sistema embarcado em C e à arquitetura FreeRTOS.
 - [Materiais, créditos e identidade visual](referencias/ORIGEM.md).
 
 ### Situação da entrega
+
+**Refatoração didática em 24/11/2026:** módulos de entrada, regras, tarefas,
+desenho e diagnóstico estão separados; exemplos antigos ficam em `Legacy`.
+Veja a [análise comparativa](docs/COMPARACAO_PROFESSOR.md) e a
+[validação desta revisão](docs/VALIDACAO_REFATORACAO.md). O teste físico desta
+revisão ainda está pendente.
 
 **Pasta reorganizada em 24/11/2026:** o jogo agora fica diretamente em
 `MIC2/projeto-jogo`, separado dos laboratórios. Execute os scripts a partir

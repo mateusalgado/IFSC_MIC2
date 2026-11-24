@@ -2,3 +2,5 @@ Game_Start2_STM32F411CE/** -text
 *.pdf -text
 docs/*.md text eol=lf
 scripts/*.py text eol=lf
+# Inventario gerado; revisar o resumo Markdown em vez de milhares de simbolos.
+docs/comparacao/inventario.json text eol=lf -diff linguist-generated=true

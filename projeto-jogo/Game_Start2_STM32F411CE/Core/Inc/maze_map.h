@@ -7,12 +7,18 @@
 #define MAZE_HEIGHT 112
 #define MAZE_BYTES (MAZE_WIDTH * MAZE_HEIGHT / 8)
 #define MAZE_COUNT 9U
-typedef struct {
+typedef struct
+{
     const uint8_t *walls;
     const char *name;
     uint32_t limit_ms;
-    uint8_t id, difficulty, corridor_width;
-    uint8_t spawn_x, spawn_y, goal_x, goal_y;
+    uint8_t id;
+    uint8_t difficulty;
+    uint8_t corridor_width;
+    uint8_t spawn_x;
+    uint8_t spawn_y;
+    uint8_t goal_x;
+    uint8_t goal_y;
 } MazeMap;
 extern const MazeMap maze_maps[MAZE_COUNT];
 extern const MazeMap maze_tutorial; /* Practice arena; excluded from campaign. */

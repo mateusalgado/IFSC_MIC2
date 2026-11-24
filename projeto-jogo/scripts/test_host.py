@@ -30,3 +30,14 @@ driver = output/'test_driver'
 subprocess.run([args.cc,*driver_flags,str(root/'tests/test_driver.c'),
                 str(base/'Src/st7735.c'),str(base/'Src/fonts.c'),'-o',str(driver)],check=True)
 subprocess.run([str(driver)],check=True)
+
+# Execute the application task bodies using deterministic queue/time stubs.
+# This does not simulate the FreeRTOS scheduler or replace a board test.
+rtos_flags = [flag for flag in flags if flag != '-I'+str(root/'tests/stubs')]
+rtos_flags.insert(0, '-I'+str(root/'tests/rtos_stubs'))
+app = output/'test_app'
+subprocess.run([args.cc,*rtos_flags,*map(str,common),str(base/'Src/app_game.c'),
+                str(root/'tests/test_app.c'),'-o',str(app)],check=True)
+for scenario in ['flow','no-adc','stale-input','display-error','click-overflow',
+                 'queue-allocation','task-allocation']:
+    subprocess.run([str(app),scenario],check=True)

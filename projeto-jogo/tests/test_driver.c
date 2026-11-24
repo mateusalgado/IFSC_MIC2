@@ -1,6 +1,7 @@
 #include "st7735.h"
 #include <assert.h>
 #include <stdio.h>
+#include <limits.h>
 
 SPI_HandleTypeDef hspi1;
 static unsigned dc,cs=1,command,calls,pixel_count,cursor;
@@ -54,6 +55,18 @@ int main(void)
     for (unsigned i=0;i<160*8;++i) strip[i]=0xe007;
     ST7735_DrawImage(0,120,160,8,strip);assert(screen[127][159]==0x07e0);
     ST7735_WriteString(0,0,"M01 v0.1",Font_7x10,0xffff,0);
+    /* A rotina herdada precisa comportar sinal, dez digitos e terminador. */
+    ST7735_write_nr(0,20,INT_MIN,Font_7x10,0xffff,0);
+    uint16_t number[10][77];
+    for (unsigned row=20;row<30;++row)
+        for (unsigned col=0;col<77;++col) number[row-20][col]=screen[row][col];
+    ST7735_FillRectangle(0,20,77,10,0);
+    ST7735_WriteString(0,20,"-2147483648",Font_7x10,0xffff,0);
+    for (unsigned row=20;row<30;++row)
+        for (unsigned col=0;col<77;++col) assert(number[row-20][col]==screen[row][col]);
+    before=calls;
+    ST7735_write_nr(0,20,INT_MAX,Font_7x10,0xffff,0);
+    assert(calls>before);
     before=calls;ST7735_WriteChar(159,127,'A',Font_7x10,0xffff,0);assert(calls==before);
     fail_next=true;ST7735_FillRectangle(0,0,1,1,0);
     assert(ST7735_HasError());before=calls;
